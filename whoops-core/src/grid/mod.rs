@@ -2,6 +2,7 @@ use crate::pos::Pos;
 use crate::tile::Tile;
 
 pub mod tile_grid;
+pub mod rewindable;
 
 pub trait Grid {
     /// returns a tile at a given position.
