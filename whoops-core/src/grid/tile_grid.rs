@@ -4,6 +4,7 @@ use crate::pos::Pos;
 use crate::tile::Tile;
 
 // invariant: tiles.len() % width == 0
+#[derive(Clone)]
 pub struct TileGrid {
     tiles: Vec<Tile>,
     width: u32,
