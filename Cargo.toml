@@ -1,6 +1,6 @@
 [workspace]
 resolver = "3"
-members = ["whoops-core"]
+members = ["whoops-core", "whoops-frontend"]
 
 [workspace.dependencies]
 thiserror = "2.0.20"
