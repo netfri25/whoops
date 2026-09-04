@@ -26,7 +26,7 @@ impl TileGrid {
             return None
         }
 
-        let index = pos.x + pos.y / self.width();
+        let index = pos.x + pos.y * self.width();
         Some(index as usize)
     }
 
