@@ -6,14 +6,15 @@ use crate::tile::Tile;
 // invariant: tiles.len() % width == 0
 #[derive(Clone)]
 pub struct TileGrid {
-    tiles: Vec<Tile>,
+    tiles: Box<[Tile]>,
     width: u32,
 }
 
 impl TileGrid {
     pub fn from_parts(tiles: impl IntoIterator<Item = Tile>, width: u32) -> Option<Self> {
-        let tiles: Vec<_> = tiles.into_iter().collect();
-        if tiles.len() % width as usize != 0 {
+        let tiles: Box<[Tile]> = tiles.into_iter().collect();
+
+        if !tiles.len().is_multiple_of(width as usize) {
             return None;
         }
 
@@ -58,4 +59,32 @@ impl Grid for TileGrid {
     fn height(&self) -> u32 {
         self.tiles.len() as u32 / self.width()
     }
+}
+
+impl<const W: usize, const H: usize> From<[[Tile; W]; H]> for TileGrid {
+    fn from(value: [[Tile; W]; H]) -> Self {
+        let tiles = value.as_flattened().into();
+        let width = W as u32;
+        Self { tiles, width }
+    }
+}
+
+#[macro_export]
+macro_rules! tile_grid {
+    ( $( [ $( $elem:tt ),* ] ),* $(,)? ) => {
+        $crate::grid::tile_grid::TileGrid::from([
+            $([
+                $( $crate::tile_grid!(@tile $elem) ),*
+            ]),*
+        ])
+    };
+
+    // Match special tokens
+    (@tile x) => { $crate::tile::Tile::Wall };
+    (@tile o) => { $crate::tile::Tile::Dot(0) };
+    (@tile 0) => { $crate::tile::Tile::Dot(0) };
+    (@tile _) => { $crate::tile::Tile::Unknown };
+
+    // Default: assume numeric literals
+    (@tile $n:literal) => { $crate::tile::Tile::Dot($n) };
 }
