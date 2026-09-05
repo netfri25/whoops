@@ -51,13 +51,13 @@ pub trait Grid {
     fn iter_pos(&self) -> GridPosIter {
         GridPosIter::new(self.width(), self.height())
     }
+}
 
-    fn iter(&self) -> GridIter<'_, Self>
-    where
-        Self: Sized,
-    {
-        GridIter::new(self)
-    }
+pub fn iter_grid<G>(grid: &G) -> GridIter<'_, G>
+where
+    G: Grid + ?Sized
+{
+    GridIter::new(grid)
 }
 
 #[derive(Debug, Clone)]
@@ -107,14 +107,14 @@ impl Iterator for GridPosIter {
 impl ExactSizeIterator for GridPosIter {}
 
 #[derive(Debug, Clone)]
-pub struct GridIter<'a, G> {
+pub struct GridIter<'a, G: ?Sized> {
     grid: &'a G,
     index: usize,
 }
 
 impl<'a, G> GridIter<'a, G>
 where
-    G: Grid
+    G: Grid + ?Sized
 {
     pub fn new(grid: &'a G) -> Self {
         let index = 0;
@@ -131,7 +131,7 @@ where
 
 impl<'a, G> Iterator for GridIter<'a, G>
 where
-    G: Grid
+    G: Grid + ?Sized
 {
     type Item = (Pos, Tile);
 
@@ -163,5 +163,5 @@ where
 
 impl<'a, G> ExactSizeIterator for GridIter<'a, G>
 where
-    G: Grid
+    G: Grid + ?Sized
 {}

@@ -1,6 +1,7 @@
 use std::collections::HashSet;
 
 use super::Grid;
+use crate::grid::iter_grid;
 use crate::pos::Pos;
 use crate::tile::Tile;
 
@@ -15,8 +16,7 @@ where
     G: Grid,
 {
     pub fn new(grid: G) -> Self {
-        let preserve = grid
-            .iter()
+        let preserve = iter_grid(&grid)
             .filter_map(|(pos, tile)| (tile.is_wall() || tile.is_dot()).then_some(pos))
             .collect();
 
