@@ -25,8 +25,8 @@ static FONT: LazyLock<Font> = LazyLock::new(|| {
     load_ttf_font_from_bytes(include_bytes!("../../assets/JosefinSans-Bold.ttf")).unwrap()
 });
 
-fn window_conf() -> Conf {
-    Conf {
+fn window_conf() -> macroquad::conf::Conf {
+    let miniquad_conf = Conf {
         window_title: "whoops".into(),
         window_width: WIDTH,
         window_height: HEIGHT,
@@ -35,8 +35,23 @@ fn window_conf() -> Conf {
         platform: miniquad::conf::Platform {
             swap_interval: Some(1),
             linux_backend: miniquad::conf::LinuxBackend::WaylandWithX11Fallback,
+            blocking_event_loop: true,
             ..Default::default()
         },
+        ..Default::default()
+    };
+
+    macroquad::conf::Conf {
+        miniquad_conf,
+        update_on: Some(macroquad::conf::UpdateTrigger {
+            key_down: true,
+            mouse_down: true,
+            mouse_up: true,
+            mouse_motion: true,
+            mouse_wheel: true,
+            specific_key: None,
+            touch: false,
+        }),
         ..Default::default()
     }
 }
