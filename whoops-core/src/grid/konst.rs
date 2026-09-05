@@ -18,7 +18,7 @@ where
     pub fn new(grid: G) -> Self {
         let preserve = grid
             .iter()
-            .filter_map(|(pos, tile)| (tile.is_wall() || tile.is_dot()).then_some(pos))
+            .filter_map(|(pos, tile)| (!tile.is_unknown()).then_some(pos))
             .collect();
 
         Self { grid, preserve }
