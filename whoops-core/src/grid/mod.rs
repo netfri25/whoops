@@ -2,10 +2,12 @@ use crate::pos::Pos;
 use crate::tile::Tile;
 
 pub mod konst;
+pub mod lazy;
 pub mod rewindable;
 pub mod tile_grid;
 
 pub use konst::Konst;
+pub use lazy::Lazy;
 pub use rewindable::Rewindable;
 pub use tile_grid::TileGrid;
 
@@ -36,6 +38,27 @@ pub trait Grid {
         self.iter_tile()
             .zip(pattern.iter_tile())
             .all(|(value, expected)| value.matches(expected))
+    }
+}
+
+impl<G> Grid for Box<G>
+where
+    G: Grid + ?Sized,
+{
+    fn get(&self, pos: Pos) -> Option<Tile> {
+        self.as_ref().get(pos)
+    }
+
+    fn set(&mut self, pos: Pos, tile: Tile) -> Option<Tile> {
+        self.as_mut().set(pos, tile)
+    }
+
+    fn width(&self) -> u32 {
+        self.as_ref().width()
+    }
+
+    fn height(&self) -> u32 {
+        self.as_ref().height()
     }
 }
 

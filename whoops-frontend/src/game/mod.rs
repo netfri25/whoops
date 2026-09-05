@@ -1,5 +1,5 @@
 use macroquad::prelude::*;
-use whoops_core::grid::{Grid, Konst, Rewindable, TileGrid};
+use whoops_core::grid::{Grid, Konst, Lazy, Rewindable, TileGrid};
 
 mod grid;
 use grid::GameGrid;
@@ -8,13 +8,21 @@ use whoops_core::tile::Tile;
 
 use crate::grid_layout::GridLayout;
 
+// TODO:
+//  Rust warns me that this is a complex type, so I put it as a type alias.
+//  should I break this up to traits? like the Monad Transformers typeclasses in Haskell
+type MomLookIMadeAGrid = Konst<Rewindable<Lazy<GameGrid<TileGrid>>>>;
+
 pub struct Game {
-    grid: Konst<Rewindable<GameGrid<TileGrid>>>,
+    grid: MomLookIMadeAGrid,
 }
 
 impl Game {
     pub fn new(grid: TileGrid) -> Self {
-        let grid = Konst::new(Rewindable::new(GameGrid::new(grid)));
+        let grid = GameGrid::new(grid);
+        let grid = Lazy::new(grid, false);
+        let grid = Rewindable::new(grid);
+        let grid = Konst::new(grid);
         Self { grid }
     }
 
@@ -59,6 +67,14 @@ impl Game {
             } else {
                 self.grid.undo();
             }
+        }
+
+        if is_key_pressed(KeyCode::S) {
+            self.grid.step();
+        }
+
+        if is_key_pressed(KeyCode::T) {
+            self.grid.toggle_is_lazy();
         }
     }
 }
