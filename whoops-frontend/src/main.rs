@@ -2,12 +2,12 @@ use macroquad::prelude::*;
 
 use whoops_core::tile_grid;
 
-use crate::game::Game;
 use crate::app::App;
+use crate::game::Game;
 
-mod grid_layout;
-mod game;
 mod app;
+mod game;
+mod grid_layout;
 
 const WIDTH: i32 = 800;
 const HEIGHT: i32 = 640;

@@ -1,7 +1,6 @@
 use macroquad::prelude::*;
 use whoops_core::pos::Pos;
 
-
 pub struct GridLayout {
     origin: Vec2,
     size: Vec2,
@@ -13,7 +12,11 @@ impl GridLayout {
         let origin = bounds.point();
         let size = bounds.size();
         let grid_count = Vec2::new(width as f32, height as f32);
-        Self { origin, size, grid_count }
+        Self {
+            origin,
+            size,
+            grid_count,
+        }
     }
 
     pub fn radius(&self) -> f32 {
@@ -45,7 +48,7 @@ impl GridLayout {
         let br = self.bottom_right();
 
         if norm.x < 0. || norm.y < 0. || norm.x >= br.x || norm.y >= br.y {
-            return None
+            return None;
         }
 
         let target = norm / self.tile_size();

@@ -1,13 +1,13 @@
 use crate::pos::Pos;
 use crate::tile::Tile;
 
-pub mod tile_grid;
-pub mod rewindable;
 pub mod konst;
+pub mod rewindable;
+pub mod tile_grid;
 
-pub use tile_grid::TileGrid;
-pub use rewindable::Rewindable;
 pub use konst::Konst;
+pub use rewindable::Rewindable;
+pub use tile_grid::TileGrid;
 
 pub trait Grid {
     /// returns a tile at a given position.
@@ -55,7 +55,7 @@ pub trait Grid {
 
 pub fn iter_grid<G>(grid: &G) -> GridIter<'_, G>
 where
-    G: Grid + ?Sized
+    G: Grid + ?Sized,
 {
     GridIter::new(grid)
 }
@@ -72,7 +72,11 @@ impl GridPosIter {
         let index = 0;
         let length = width * height;
 
-        Self { index, width, length }
+        Self {
+            index,
+            width,
+            length,
+        }
     }
 }
 
@@ -81,7 +85,7 @@ impl Iterator for GridPosIter {
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.index >= self.length {
-            return None
+            return None;
         }
 
         let index = self.index;
@@ -114,7 +118,7 @@ pub struct GridIter<'a, G: ?Sized> {
 
 impl<'a, G> GridIter<'a, G>
 where
-    G: Grid + ?Sized
+    G: Grid + ?Sized,
 {
     pub fn new(grid: &'a G) -> Self {
         let index = 0;
@@ -131,13 +135,13 @@ where
 
 impl<'a, G> Iterator for GridIter<'a, G>
 where
-    G: Grid + ?Sized
+    G: Grid + ?Sized,
 {
     type Item = (Pos, Tile);
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.len_remainder() == 0 {
-            return None
+            return None;
         }
 
         let index = self.index as u32;
@@ -161,7 +165,4 @@ where
     }
 }
 
-impl<'a, G> ExactSizeIterator for GridIter<'a, G>
-where
-    G: Grid + ?Sized
-{}
+impl<'a, G> ExactSizeIterator for GridIter<'a, G> where G: Grid + ?Sized {}

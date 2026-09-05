@@ -23,7 +23,7 @@ impl TileGrid {
 
     fn index_of(&self, pos: Pos) -> Option<usize> {
         if pos.x >= self.width() || pos.y >= self.height() {
-            return None
+            return None;
         }
 
         let index = pos.x + pos.y * self.width();

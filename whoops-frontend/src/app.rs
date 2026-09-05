@@ -2,7 +2,6 @@ use macroquad::prelude::*;
 
 use crate::game::Game;
 
-
 #[derive(Default)]
 pub struct App {
     game: Option<Game>,
@@ -25,4 +24,3 @@ impl App {
         }
     }
 }
-

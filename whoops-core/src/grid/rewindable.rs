@@ -73,7 +73,11 @@ where
 
     fn set(&mut self, pos: Pos, new_tile: Tile) -> Option<Tile> {
         let old_tile = self.grid.set(pos, new_tile)?;
-        self.history_add(Modification { pos, old_tile, new_tile });
+        self.history_add(Modification {
+            pos,
+            old_tile,
+            new_tile,
+        });
         Some(old_tile)
     }
 
