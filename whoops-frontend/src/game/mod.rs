@@ -11,7 +11,7 @@ use crate::grid_layout::GridLayout;
 // TODO:
 //  Rust warns me that this is a complex type, so I put it as a type alias.
 //  should I break this up to traits? like the Monad Transformers typeclasses in Haskell
-type MomLookIMadeAGrid = Konst<Rewindable<Lazy<GameGrid<TileGrid>>>>;
+type MomLookIMadeAGrid = Konst<Lazy<Rewindable<GameGrid<TileGrid>>>>;
 
 pub struct Game {
     grid: MomLookIMadeAGrid,
@@ -20,8 +20,8 @@ pub struct Game {
 impl Game {
     pub fn new(grid: TileGrid) -> Self {
         let grid = GameGrid::new(grid);
-        let grid = Lazy::new(grid, false);
         let grid = Rewindable::new(grid);
+        let grid = Lazy::new(grid, false);
         let grid = Konst::new(grid);
         Self { grid }
     }
