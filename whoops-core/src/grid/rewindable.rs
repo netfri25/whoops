@@ -1,3 +1,5 @@
+use std::ops::{Deref, DerefMut};
+
 use crate::pos::Pos;
 use crate::tile::Tile;
 
@@ -73,7 +75,11 @@ where
 
     fn set(&mut self, pos: Pos, new_tile: Tile) -> Option<Tile> {
         let old_tile = self.grid.set(pos, new_tile)?;
-        self.history_add(Modification { pos, old_tile, new_tile });
+        self.history_add(Modification {
+            pos,
+            old_tile,
+            new_tile,
+        });
         Some(old_tile)
     }
 
@@ -95,20 +101,22 @@ where
     }
 }
 
-impl<G> AsRef<G> for Rewindable<G> {
-    fn as_ref(&self) -> &G {
-        &self.grid
-    }
-}
-
-impl<G> AsMut<G> for Rewindable<G> {
-    fn as_mut(&mut self) -> &mut G {
+impl<G> DerefMut for Rewindable<G> {
+    fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.grid
     }
 }
 
+impl<G> Deref for Rewindable<G> {
+    type Target = G;
+
+    fn deref(&self) -> &Self::Target {
+        &self.grid
+    }
+}
+
 #[derive(Clone)]
-struct Modification {
+pub struct Modification {
     pub pos: Pos,
     pub old_tile: Tile,
     pub new_tile: Tile,

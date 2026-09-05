@@ -23,7 +23,7 @@ impl TileGrid {
 
     fn index_of(&self, pos: Pos) -> Option<usize> {
         if pos.x >= self.width() || pos.y >= self.height() {
-            return None
+            return None;
         }
 
         let index = pos.x + pos.y * self.width();
@@ -72,7 +72,7 @@ impl<const W: usize, const H: usize> From<[[Tile; W]; H]> for TileGrid {
 #[macro_export]
 macro_rules! tile_grid {
     ( $( [ $( $elem:tt ),* ] ),* $(,)? ) => {
-        TileGrid::from([
+        $crate::grid::tile_grid::TileGrid::from([
             $([
                 $( $crate::tile_grid!(@tile $elem) ),*
             ]),*
