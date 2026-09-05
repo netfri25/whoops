@@ -5,6 +5,10 @@ pub mod tile_grid;
 pub mod rewindable;
 pub mod konst;
 
+pub use tile_grid::TileGrid;
+pub use rewindable::Rewindable;
+pub use konst::Konst;
+
 pub trait Grid {
     /// returns a tile at a given position.
     /// if out of bounds, returns None.
