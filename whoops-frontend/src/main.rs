@@ -58,7 +58,7 @@ async fn main() {
     loop {
         clear_background(BLACK);
         let bounds = get_window_bounds();
-        app.handle_input(bounds);
+        app.update(bounds);
         app.draw(bounds);
         draw_fps();
         next_frame().await

@@ -13,9 +13,9 @@ impl App {
         Self { game }
     }
 
-    pub fn handle_input(&mut self, bounds: Rect) {
+    pub fn update(&mut self, bounds: Rect) {
         if let Some(ref mut game) = self.game {
-            game.handle_input(bounds)
+            game.update(bounds)
         }
     }
 
