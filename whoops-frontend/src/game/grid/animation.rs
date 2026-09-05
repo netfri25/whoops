@@ -5,7 +5,7 @@ use macroquad::prelude::miniquad::window::schedule_update;
 use macroquad::prelude::*;
 use whoops_core::pos::Pos;
 
-use crate::game::draw_tile;
+use super::draw_tile;
 use crate::grid_layout::GridLayout;
 
 const TILE_ANIMATION_DURATION: Duration = Duration::from_millis(200);

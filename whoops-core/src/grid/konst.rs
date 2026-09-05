@@ -1,4 +1,5 @@
 use std::collections::HashSet;
+use std::ops::{Deref, DerefMut};
 
 use super::Grid;
 use crate::grid::iter_grid;
@@ -58,14 +59,16 @@ where
     }
 }
 
-impl<G> AsMut<G> for Konst<G> {
-    fn as_mut(&mut self) -> &mut G {
+impl<G> DerefMut for Konst<G> {
+    fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.grid
     }
 }
 
-impl<G> AsRef<G> for Konst<G> {
-    fn as_ref(&self) -> &G {
+impl<G> Deref for Konst<G> {
+    type Target = G;
+
+    fn deref(&self) -> &Self::Target {
         &self.grid
     }
 }
