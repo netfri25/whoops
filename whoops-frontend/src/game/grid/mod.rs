@@ -17,6 +17,8 @@ static FONT: LazyLock<Font> = LazyLock::new(|| {
     load_ttf_font_from_bytes(include_bytes!("../../../../assets/JosefinSans-Bold.ttf")).unwrap()
 });
 
+const FONT_SCALING: u16 = 250;
+
 const UNKNOWN_COLOR: Color = Color::from_rgba(0x22, 0x24, 0x26, 0xff);
 const WALL_COLOR: Color = Color::from_rgba(0xaa, 0x00, 0x10, 0xff);
 const DOT_COLOR: Color = Color::from_rgba(0x16, 0x9a, 0xb3, 0xff);
@@ -122,7 +124,7 @@ fn draw_tile_value(center: Vec2, font_size: f32, value: Option<u8>) {
     };
 
     let text = format!("{value}");
-    let scaling = 100;
+    let scaling = FONT_SCALING;
 
     let font_scale = font_size / scaling as f32;
     let font_size = scaling;
