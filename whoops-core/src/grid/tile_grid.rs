@@ -3,7 +3,8 @@ use super::Grid;
 use crate::pos::Pos;
 use crate::tile::Tile;
 
-// invariant: tiles.len() % width == 0
+/// invariant: tiles.len() % width == 0
+/// simple grid implementation that keeps tiles as a 1-dim array of Tile
 #[derive(Clone)]
 pub struct TileGrid {
     tiles: Box<[Tile]>,

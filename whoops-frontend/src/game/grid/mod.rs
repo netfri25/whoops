@@ -24,6 +24,7 @@ const WALL_COLOR: Color = Color::from_rgba(0xaa, 0x00, 0x10, 0xff);
 const DOT_COLOR: Color = Color::from_rgba(0x16, 0x9a, 0xb3, 0xff);
 const BACKGROUND: Color = Color::from_rgba(0x18, 0x1a, 0x1b, 0xff);
 
+/// grid that draws to the screen using macroquad
 pub struct GameGrid<G> {
     grid: G,
     animation: GridAnimation,

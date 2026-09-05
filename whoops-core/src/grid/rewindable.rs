@@ -5,6 +5,7 @@ use crate::tile::Tile;
 
 use super::Grid;
 
+/// grid that keeps an history of the inner grid and allows to undo/redo
 #[derive(Clone)]
 pub struct Rewindable<G> {
     grid: G,
