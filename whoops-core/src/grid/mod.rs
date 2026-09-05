@@ -33,31 +33,33 @@ pub trait Grid {
             return false;
         }
 
-        (0..height)
-            .flat_map(|y| (0..width).map(move |x| Pos { x, y }))
-            .all(|pos| {
-                let Some(value) = self.get(pos) else {
-                    return false;
-                };
-
-                let Some(expected) = pattern.get(pos) else {
-                    return false;
-                };
-
-                value.matches(expected)
-            })
-    }
-
-    fn iter_pos(&self) -> GridPosIter {
-        GridPosIter::new(self.width(), self.height())
+        self.iter_tile()
+            .zip(pattern.iter_tile())
+            .all(|(value, expected)| value.matches(expected))
     }
 }
 
-pub fn iter_grid<G>(grid: &G) -> GridIter<'_, G>
+pub trait GridExt {
+    fn iter_pos(&self) -> impl Iterator<Item = Pos>;
+    fn iter_tile(&self) -> impl Iterator<Item = Tile>;
+    fn iter(&self) -> impl Iterator<Item = (Pos, Tile)>;
+}
+
+impl<G> GridExt for G
 where
     G: Grid + ?Sized,
 {
-    GridIter::new(grid)
+    fn iter_pos(&self) -> impl Iterator<Item = Pos> {
+        GridPosIter::new(self.width(), self.height())
+    }
+
+    fn iter_tile(&self) -> impl Iterator<Item = Tile> {
+        GridIter::new(self).map(|(_, tile)| tile)
+    }
+
+    fn iter(&self) -> impl Iterator<Item = (Pos, Tile)> {
+        GridIter::new(self)
+    }
 }
 
 #[derive(Debug, Clone)]

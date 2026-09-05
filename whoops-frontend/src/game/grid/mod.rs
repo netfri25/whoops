@@ -3,7 +3,7 @@ use std::sync::LazyLock;
 
 use macroquad::prelude::*;
 
-use whoops_core::grid::{Grid, iter_grid};
+use whoops_core::grid::{Grid, GridExt};
 use whoops_core::pos::Pos;
 use whoops_core::tile::Tile;
 
@@ -96,7 +96,7 @@ pub fn draw_grid(grid: &dyn Grid, bounds: Rect) {
     let h = grid.height();
     let layout = GridLayout::new(bounds, w, h);
 
-    for (pos, tile) in iter_grid(grid) {
+    for (pos, tile) in grid.iter() {
         let color = tile_color(tile);
         let value = tile.as_value();
         draw_tile(&layout, pos, color, value);
