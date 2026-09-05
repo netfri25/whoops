@@ -3,8 +3,7 @@ use std::sync::LazyLock;
 use macroquad::prelude::*;
 
 use whoops_core::grid::Grid;
-use whoops_core::grid::rewindable::Rewindable;
-use whoops_core::grid::tile_grid::TileGrid;
+use whoops_core::grid::{konst::Konst, rewindable::Rewindable, tile_grid::TileGrid};
 use whoops_core::pos::Pos;
 use whoops_core::tile::Tile;
 use whoops_core::tile_grid;
@@ -66,11 +65,12 @@ async fn main() {
         [_, 4, _, 4],
     ];
 
-    let app = App::default();
+    let mut app = App::new(Some(Game::new(grid)));
 
     loop {
         clear_background(BLACK);
         let bounds = get_window_bounds();
+        app.handle_input(bounds);
         app.draw(bounds);
         draw_fps();
         next_frame().await
@@ -83,6 +83,16 @@ pub struct App {
 }
 
 impl App {
+    pub fn new(game: Option<Game>) -> Self {
+        Self { game }
+    }
+
+    pub fn handle_input(&mut self, bounds: Rect) {
+        if let Some(ref mut game) = self.game {
+            game.handle_input(bounds)
+        }
+    }
+
     pub fn draw(&self, bounds: Rect) {
         if let Some(ref game) = self.game {
             game.draw(bounds)
@@ -91,13 +101,40 @@ impl App {
 }
 
 pub struct Game {
-    grid: Rewindable<TileGrid>,
+    grid: Konst<Rewindable<TileGrid>>,
 }
 
 impl Game {
-    pub fn new(grid: impl Into<Rewindable<TileGrid>>) -> Self {
-        let grid = grid.into();
+    pub fn new(grid: TileGrid) -> Self {
+        let grid = Konst::new(Rewindable::new(grid));
         Self { grid }
+    }
+
+    pub fn handle_input(&mut self, bounds: Rect) {
+        self.handle_mouse_input(bounds);
+    }
+
+    fn handle_mouse_input(&mut self, bounds: Rect) {
+        let change_tile = match () {
+            _ if is_mouse_button_pressed(MouseButton::Left) => next_tile,
+            _ if is_mouse_button_pressed(MouseButton::Right) => prev_tile,
+            _ => return,
+        };
+
+        let layout = GridLayout::new(bounds, self.grid.width(), self.grid.height());
+        let point = mouse_position().into();
+        let Some(pos) = layout.tile_at(point) else {
+            return;
+        };
+
+        // NOTE: if we want to allow only pressing on the circle itself, we can add here a condition
+        // that checks the mouse position (`point`) against `layout.center_of(pos)`
+
+        let src_tile = self.grid.get(pos).unwrap();
+        let dst_tile = change_tile(src_tile);
+
+        // TODO: register animation?
+        self.grid.set(pos, dst_tile);
     }
 
     pub fn draw(&self, bounds: Rect) {
@@ -129,13 +166,9 @@ impl Game {
     }
 
     fn draw_tile_circle(&self, center: Vec2, radius: f32, tile: Tile) {
-        let color = match tile {
-            Tile::Unknown => UNKNOWN_COLOR,
-            Tile::Wall => WALL_COLOR,
-            Tile::Dot(_) => DOT_COLOR,
-        };
+        let color = tile_color(tile);
 
-        let sides = 255;
+        let sides = 64;
         let rotation = 0.;
         draw_poly(center.x, center.y, sides, radius, rotation, color);
     }
@@ -173,4 +206,28 @@ fn get_window_bounds() -> Rect {
     let w = screen_width();
     let h = screen_height();
     Rect::new(0., 0., w, h)
+}
+
+fn next_tile(tile: Tile) -> Tile {
+    match tile {
+        Tile::Unknown => Tile::Dot(0),
+        Tile::Wall => Tile::Unknown,
+        Tile::Dot(_) => Tile::Wall,
+    }
+}
+
+fn prev_tile(tile: Tile) -> Tile {
+    match tile {
+        Tile::Unknown => Tile::Wall,
+        Tile::Wall => Tile::Dot(0),
+        Tile::Dot(_) => Tile::Unknown,
+    }
+}
+
+fn tile_color(tile: Tile) -> Color {
+    match tile {
+        Tile::Unknown => UNKNOWN_COLOR,
+        Tile::Wall => WALL_COLOR,
+        Tile::Dot(_) => DOT_COLOR,
+    }
 }
