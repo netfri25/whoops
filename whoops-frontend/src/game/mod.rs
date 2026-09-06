@@ -20,8 +20,8 @@ pub struct Game {
 impl Game {
     pub fn new(grid: TileGrid) -> Self {
         let grid = GameGrid::new(grid);
-        let grid = Lazy::new(grid, false);
         let grid = History::new(grid);
+        let grid = Lazy::new(grid, false, []);
         let grid = Konst::new(grid);
         Self { grid }
     }

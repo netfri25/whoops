@@ -10,21 +10,21 @@ use crate::tile::Tile;
 /// when using From<G>, it's non lazy by default
 pub struct Lazy<G> {
     grid: G,
-    steps: VecDeque<Step>,
     is_lazy: bool,
-}
-
-struct Step {
-    pos: Pos,
-    tile: Tile,
+    steps: VecDeque<Step>,
 }
 
 impl<G> Lazy<G>
 where
     G: Grid,
 {
-    pub fn new(grid: G, is_lazy: bool) -> Self {
-        let steps = VecDeque::new();
+    pub fn new(grid: G, is_lazy: bool, steps: impl Into<Vec<Step>>) -> Self {
+        // using `steps` argument as a `Vec` instead of `VecDeque`, since `Vec` is usually more
+        // common and will be supported for conversion from almost any type that can be converted
+        // into it, while also the conversion from `Vec` to `VecDeque` is O(1) so there's no
+        // performance loss
+        let steps = steps.into(); // Vec<_>
+        let steps = steps.into(); // VecDeque<_>
         Self {
             grid,
             steps,
@@ -103,7 +103,7 @@ where
     G: Grid,
 {
     fn from(value: G) -> Self {
-        Self::new(value, false)
+        Self::new(value, false, [])
     }
 }
 
@@ -118,5 +118,19 @@ impl<G> Deref for Lazy<G> {
 
     fn deref(&self) -> &Self::Target {
         &self.grid
+    }
+}
+
+pub struct Step {
+    pub pos: Pos,
+    pub tile: Tile,
+}
+
+impl From<super::history::Modification> for Step {
+    fn from(value: super::history::Modification) -> Self {
+        Self {
+            pos: value.pos,
+            tile: value.new_tile,
+        }
     }
 }
