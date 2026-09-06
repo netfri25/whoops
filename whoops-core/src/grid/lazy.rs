@@ -18,13 +18,7 @@ impl<G> Lazy<G>
 where
     G: Grid,
 {
-    pub fn new(grid: G, is_lazy: bool, steps: impl Into<Vec<Step>>) -> Self {
-        // using `steps` argument as a `Vec` instead of `VecDeque`, since `Vec` is usually more
-        // common and will be supported for conversion from almost any type that can be converted
-        // into it, while also the conversion from `Vec` to `VecDeque` is O(1) so there's no
-        // performance loss
-        let steps = steps.into(); // Vec<_>
-        let steps = steps.into(); // VecDeque<_>
+    pub fn new(grid: G, is_lazy: bool, steps: VecDeque<Step>) -> Self {
         Self {
             grid,
             steps,
@@ -103,7 +97,7 @@ where
     G: Grid,
 {
     fn from(value: G) -> Self {
-        Self::new(value, false, [])
+        Self::new(value, false, [].into())
     }
 }
 
