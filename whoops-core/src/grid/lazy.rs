@@ -128,3 +128,15 @@ impl From<super::history::Modification> for Step {
         }
     }
 }
+
+impl<G> From<super::history::History<G>> for Lazy<G>
+where
+    G: Grid
+{
+    fn from(mut value: super::history::History<G>) -> Self {
+        let history = value.take_history();
+        let steps = history.into_iter().map(Into::into).collect();
+        let grid = value.into_grid();
+        Self::new(grid, false, steps)
+    }
+}
