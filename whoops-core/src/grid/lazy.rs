@@ -26,6 +26,10 @@ where
         }
     }
 
+    pub fn into_grid(self) -> G {
+        self.grid
+    }
+
     pub fn set_is_lazy(&mut self, is_lazy: bool) {
         self.is_lazy = is_lazy;
     }

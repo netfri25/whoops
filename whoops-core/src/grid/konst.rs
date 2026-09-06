@@ -23,6 +23,10 @@ where
 
         Self { grid, preserve }
     }
+
+    pub fn into_grid(self) -> G {
+        self.grid
+    }
 }
 
 impl<G> Grid for Konst<G>
