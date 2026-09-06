@@ -62,6 +62,13 @@ where
         self.steps.push_back(Step { pos, tile })
     }
 
+    pub fn lazy_extend<I>(&mut self, iter: I)
+    where
+        I: IntoIterator<Item = Step>
+    {
+        self.steps.extend(iter)
+    }
+
     fn apply_step(&mut self, Step { pos, tile }: Step) {
         self.grid.set(pos, tile);
     }
