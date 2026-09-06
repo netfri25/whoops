@@ -62,6 +62,27 @@ where
     }
 }
 
+impl<G> Grid for &mut G
+where
+    G: Grid + ?Sized,
+{
+    fn get(&self, pos: Pos) -> Option<Tile> {
+        (**self).get(pos)
+    }
+
+    fn set(&mut self, pos: Pos, tile: Tile) -> Option<Tile> {
+        (**self).set(pos, tile)
+    }
+
+    fn width(&self) -> u32 {
+        (**self).width()
+    }
+
+    fn height(&self) -> u32 {
+        (**self).height()
+    }
+}
+
 pub trait GridExt {
     fn iter_pos(&self) -> impl Iterator<Item = Pos>;
     fn iter_tile(&self) -> impl Iterator<Item = Tile>;
