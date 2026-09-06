@@ -7,13 +7,13 @@ use super::Grid;
 
 /// grid that keeps an history of the inner grid and allows to undo/redo
 #[derive(Clone)]
-pub struct Rewindable<G> {
+pub struct History<G> {
     grid: G,
     undo_left: usize,
     history: Vec<Modification>,
 }
 
-impl<G> Rewindable<G>
+impl<G> History<G>
 where
     G: Grid,
 {
@@ -25,8 +25,15 @@ where
         }
     }
 
-    pub fn take_grid(self) -> G {
+    pub fn into_grid(self) -> G {
         self.grid
+    }
+
+    pub fn take_history(&mut self) -> Vec<Modification> {
+        self.history.truncate(self.undo_left);
+        let history = std::mem::take(&mut self.history);
+        self.undo_left = 0;
+        history
     }
 
     /// tries to undo the last modification.
@@ -66,7 +73,7 @@ where
     }
 }
 
-impl<G> Grid for Rewindable<G>
+impl<G> Grid for History<G>
 where
     G: Grid,
 {
@@ -93,7 +100,7 @@ where
     }
 }
 
-impl<G> From<G> for Rewindable<G>
+impl<G> From<G> for History<G>
 where
     G: Grid,
 {
@@ -102,13 +109,13 @@ where
     }
 }
 
-impl<G> DerefMut for Rewindable<G> {
+impl<G> DerefMut for History<G> {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.grid
     }
 }
 
-impl<G> Deref for Rewindable<G> {
+impl<G> Deref for History<G> {
     type Target = G;
 
     fn deref(&self) -> &Self::Target {

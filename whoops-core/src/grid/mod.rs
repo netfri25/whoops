@@ -1,14 +1,14 @@
 use crate::pos::Pos;
 use crate::tile::Tile;
 
+pub mod history;
 pub mod konst;
 pub mod lazy;
-pub mod rewindable;
 pub mod tile_grid;
 
+pub use history::History;
 pub use konst::Konst;
 pub use lazy::Lazy;
-pub use rewindable::Rewindable;
 pub use tile_grid::TileGrid;
 
 pub trait Grid {
