@@ -10,15 +10,12 @@ where
     G: Grid,
 {
     let rule = tile_rule::default_tile_rule();
-    TileRuleSolver::new(rule)
-        .and_then(Unreachable)
+    TileRuleSolver::new(rule).and_then(Unreachable)
 }
 
 pub fn default_solver_checked<G>() -> impl Solver<G>
 where
-    G: Grid
+    G: Grid,
 {
-    default_solver()
-        .and_then(AssertFull)
-        .and_then(AssertValid)
+    default_solver().and_then(AssertFull).and_then(AssertValid)
 }
