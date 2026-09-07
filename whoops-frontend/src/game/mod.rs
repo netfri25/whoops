@@ -1,20 +1,20 @@
 use macroquad::prelude::*;
-use whoops_core::grid::{Grid, Konst, Lazy, History, TileGrid};
+use whoops_core::grid::{Grid, History, Konst, Lazy, TileGrid};
 
 mod grid;
 use grid::GameGrid;
 use whoops_core::pos::Pos;
 use whoops_core::tile::Tile;
+use whoops_solver::{Solver, TileRuleSolver};
 
 use crate::grid_layout::GridLayout;
 
 // TODO:
 //  Rust warns me that this is a complex type, so I put it as a type alias.
 //  should I break this up to traits? like the Monad Transformers typeclasses in Haskell
-type MomLookIMadeAGrid = Konst<Lazy<History<GameGrid<TileGrid>>>>;
 
 pub struct Game {
-    grid: MomLookIMadeAGrid,
+    grid: Konst<Lazy<History<GameGrid<TileGrid>>>>,
 }
 
 impl Game {
@@ -76,6 +76,22 @@ impl Game {
         if is_key_pressed(KeyCode::T) {
             self.grid.toggle_is_lazy();
         }
+
+        if is_key_pressed(KeyCode::C) {
+            self.solve();
+        }
+    }
+
+    fn solve(&mut self) {
+        let grid: TileGrid = self.grid.clone();
+
+        let mut solver = TileRuleSolver::with_default_rule();
+        let mut solved_grid = match solver.solve(History::new(grid)) {
+            Ok(grid) | Err(grid) => grid,
+        };
+
+        let history = solved_grid.take_history();
+        self.grid.lazy_extend(history.into_iter().map(Into::into));
     }
 }
 

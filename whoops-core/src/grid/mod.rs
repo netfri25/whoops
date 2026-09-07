@@ -39,6 +39,10 @@ pub trait Grid {
             .zip(pattern.iter_tile())
             .all(|(value, expected)| value.matches(expected))
     }
+
+    fn is_full(&self) -> bool {
+        !self.iter_tile().any(|tile| tile.is_unknown())
+    }
 }
 
 impl<G> Grid for Box<G>

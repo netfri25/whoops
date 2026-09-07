@@ -339,6 +339,14 @@ version = "0.1.0"
 dependencies = [
  "macroquad",
  "whoops-core",
+ "whoops-solver",
+]
+
+[[package]]
+name = "whoops-solver"
+version = "0.1.0"
+dependencies = [
+ "whoops-core",
 ]
 
 [[package]]
