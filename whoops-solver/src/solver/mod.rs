@@ -1,6 +1,6 @@
 mod tile_rule_solver;
 
-pub use tile_rule_solver::{DefaultTileRuleType, TileRuleSolver, default_tile_rule};
+pub use tile_rule_solver::{TileRuleSolver, default_tile_rule, default_tile_rule_solver};
 
 mod ext;
 mod func_solver;

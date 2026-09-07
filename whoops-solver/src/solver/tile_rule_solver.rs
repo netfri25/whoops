@@ -4,18 +4,20 @@ use whoops_core::grid::{Grid, GridExt};
 use whoops_core::pos::Pos;
 
 use crate::tile_rule::block_complete::BlockComplete;
+use crate::tile_rule::minimum::Minimum;
 use crate::{Solver};
-use crate::tile_rule::{Response, TileRule};
+use crate::tile_rule::{Response, TileRule, TileRuleExt};
 
 pub struct TileRuleSolver<R> {
     tile_rule: R,
     targets: VecDeque<Pos>,
 }
 
-impl TileRuleSolver<DefaultTileRuleType> {
-    pub fn with_default_rule() -> Self {
-        Self::new(default_tile_rule())
-    }
+pub fn default_tile_rule_solver<G>() -> TileRuleSolver<impl TileRule<G>>
+where
+    G: Grid
+{
+    TileRuleSolver::new(default_tile_rule())
 }
 
 impl<R, G> Solver<G> for TileRuleSolver<R>
@@ -89,15 +91,10 @@ impl<R> TileRuleSolver<R> {
     }
 }
 
-pub type DefaultTileRuleType = BlockComplete;
-
-
-pub fn default_tile_rule() -> DefaultTileRuleType {
-    BlockComplete
-    // Seq(&[
-    //     &Unreachable as &dyn Rule<G>,
-    //     &Minimum as &dyn Rule<G>,
-    //     &Violation as &dyn Rule<G>,
-    //     &BlockComplete as &dyn Rule<G>,
-    // ])
+pub fn default_tile_rule<G>() -> impl TileRule<G>
+where
+    G: Grid
+{
+    // Minimum.chain(Violation).chain(BlockComplete)
+    Minimum.chain(BlockComplete)
 }

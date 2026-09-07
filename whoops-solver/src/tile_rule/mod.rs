@@ -2,6 +2,7 @@ use whoops_core::pos::Pos;
 
 pub mod block_complete;
 pub mod func_tile_rule;
+pub mod minimum;
 
 mod ext;
 

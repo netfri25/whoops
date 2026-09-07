@@ -5,7 +5,7 @@ mod grid;
 use grid::GameGrid;
 use whoops_core::pos::Pos;
 use whoops_core::tile::Tile;
-use whoops_solver::{Solver, TileRuleSolver};
+use whoops_solver::{Solver, default_tile_rule_solver};
 
 use crate::grid_layout::GridLayout;
 
@@ -85,7 +85,7 @@ impl Game {
     fn solve(&mut self) {
         let grid: TileGrid = self.grid.clone();
 
-        let mut solver = TileRuleSolver::with_default_rule();
+        let mut solver = default_tile_rule_solver();
         let mut solved_grid = match solver.solve(History::new(grid)) {
             Ok(grid) | Err(grid) => grid,
         };
