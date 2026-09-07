@@ -1,4 +1,5 @@
 use crate::grid::Grid;
+use crate::offset::Offset;
 use crate::pos::Pos;
 use crate::tile::Tile;
 
@@ -6,6 +7,10 @@ pub trait GridExt {
     fn iter_pos(&self) -> impl Iterator<Item = Pos>;
     fn iter_tile(&self) -> impl Iterator<Item = Tile>;
     fn iter(&self) -> impl Iterator<Item = (Pos, Tile)>;
+
+    fn iter_pos_offset(&self, start: Pos, offset: Offset) -> impl Iterator<Item = Pos>;
+    fn iter_tile_offset(&self, start: Pos, offset: Offset) -> impl Iterator<Item = Tile>;
+    fn iter_offset(&self, start: Pos, offset: Offset) -> impl Iterator<Item = (Pos, Tile)>;
 }
 
 impl<G> GridExt for G
@@ -22,6 +27,20 @@ where
 
     fn iter(&self) -> impl Iterator<Item = (Pos, Tile)> {
         GridIter::new(self)
+    }
+
+    fn iter_pos_offset(&self, start: Pos, offset: Offset) -> impl Iterator<Item = Pos> {
+        std::iter::successors(Some(start), move |pos| pos.add_offset(offset))
+    }
+
+    fn iter_tile_offset(&self, start: Pos, offset: Offset) -> impl Iterator<Item = Tile> {
+        self.iter_pos_offset(start, offset)
+            .flat_map(|pos| self.get(pos))
+    }
+
+    fn iter_offset(&self, start: Pos, offset: Offset) -> impl Iterator<Item = (Pos, Tile)> {
+        self.iter_pos_offset(start, offset)
+            .flat_map(|pos| self.get(pos).map(|tile| (pos, tile)))
     }
 }
 
