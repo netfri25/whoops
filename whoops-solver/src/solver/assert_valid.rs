@@ -29,10 +29,6 @@ where
                 total <= value
             });
 
-        if is_valid {
-            Ok(grid)
-        } else {
-            Err(grid)
-        }
+        if is_valid { Ok(grid) } else { Err(grid) }
     }
 }

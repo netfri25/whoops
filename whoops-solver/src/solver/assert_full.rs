@@ -7,7 +7,7 @@ pub struct AssertFull;
 
 impl<G> Solver<G> for AssertFull
 where
-    G: Grid
+    G: Grid,
 {
     fn solve(&mut self, grid: G) -> Result<G, G> {
         let contains_unknown = grid.iter_tile().any(|tile| tile.is_unknown());

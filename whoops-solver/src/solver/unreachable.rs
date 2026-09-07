@@ -14,7 +14,7 @@ where
     fn solve(&mut self, mut grid: G) -> Result<G, G> {
         for pos in grid.iter_pos() {
             if grid.get(pos).is_none_or(|tile| !tile.is_unknown()) {
-                continue
+                continue;
             }
 
             let blocked = Offset::DIRECTIONS.into_iter().all(|direction| {
