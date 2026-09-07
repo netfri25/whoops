@@ -4,11 +4,11 @@ use crate::pos::Pos;
 use crate::tile::Tile;
 
 pub trait GridExt {
-    fn iter_pos(&self) -> impl Iterator<Item = Pos>;
+    fn iter_pos(&self) -> impl Iterator<Item = Pos> + 'static;
     fn iter_tile(&self) -> impl Iterator<Item = Tile>;
     fn iter(&self) -> impl Iterator<Item = (Pos, Tile)>;
 
-    fn iter_pos_offset(&self, start: Pos, offset: Offset) -> impl Iterator<Item = Pos>;
+    fn iter_pos_offset(&self, start: Pos, offset: Offset) -> impl Iterator<Item = Pos> + 'static;
     fn iter_tile_offset(&self, start: Pos, offset: Offset) -> impl Iterator<Item = Tile>;
     fn iter_offset(&self, start: Pos, offset: Offset) -> impl Iterator<Item = (Pos, Tile)>;
 }
@@ -17,7 +17,7 @@ impl<G> GridExt for G
 where
     G: Grid + ?Sized,
 {
-    fn iter_pos(&self) -> impl Iterator<Item = Pos> {
+    fn iter_pos(&self) -> impl Iterator<Item = Pos> + 'static {
         GridPosIter::new(self.width(), self.height())
     }
 
@@ -29,7 +29,7 @@ where
         GridIter::new(self)
     }
 
-    fn iter_pos_offset(&self, start: Pos, offset: Offset) -> impl Iterator<Item = Pos> {
+    fn iter_pos_offset(&self, start: Pos, offset: Offset) -> impl Iterator<Item = Pos> + 'static {
         let w = self.width();
         let h = self.height();
         std::iter::successors(Some(start), move |pos| pos.add_offset(offset))
