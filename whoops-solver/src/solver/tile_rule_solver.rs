@@ -3,22 +3,12 @@ use std::collections::VecDeque;
 use whoops_core::grid::{Grid, GridExt};
 use whoops_core::pos::Pos;
 
-use crate::tile_rule::block_complete::BlockComplete;
-use crate::tile_rule::minimum::Minimum;
-use crate::tile_rule::violation::Violation;
-use crate::{Solver};
-use crate::tile_rule::{TileRule, TileRuleExt};
+use crate::Solver;
+use crate::tile_rule::TileRule;
 
 pub struct TileRuleSolver<R> {
     tile_rule: R,
     targets: VecDeque<Pos>,
-}
-
-pub fn default_tile_rule_solver<G>() -> TileRuleSolver<impl TileRule<G>>
-where
-    G: Grid
-{
-    TileRuleSolver::new(default_tile_rule())
 }
 
 impl<R, G> Solver<G> for TileRuleSolver<R>
@@ -97,11 +87,4 @@ impl<R> TileRuleSolver<R> {
             }
         }
     }
-}
-
-pub fn default_tile_rule<G>() -> impl TileRule<G>
-where
-    G: Grid
-{
-    Violation.chain(Minimum).chain(BlockComplete)
 }

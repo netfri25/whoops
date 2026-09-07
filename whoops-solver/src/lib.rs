@@ -1,4 +1,14 @@
+use whoops_core::grid::Grid;
+
 pub mod tile_rule;
 pub mod solver;
 
 pub use solver::*;
+
+pub fn default_solver<G>() -> impl Solver<G>
+where
+    G: Grid
+{
+    let rule = tile_rule::default_tile_rule();
+    TileRuleSolver::new(rule)
+}

@@ -5,7 +5,7 @@ mod grid;
 use grid::GameGrid;
 use whoops_core::pos::Pos;
 use whoops_core::tile::Tile;
-use whoops_solver::{Solver, default_tile_rule_solver};
+use whoops_solver::{Solver, default_solver};
 
 use crate::grid_layout::GridLayout;
 
@@ -85,8 +85,13 @@ impl Game {
     fn solve(&mut self) {
         let grid: TileGrid = self.grid.clone();
 
-        let mut solver = default_tile_rule_solver();
-        let mut solved_grid = match solver.solve(History::new(grid)) {
+        let mut solver = default_solver();
+        let start = std::time::Instant::now();
+        let solution = solver.solve(History::new(grid));
+        let elapsed = start.elapsed();
+        eprintln!("solving took {:?}", elapsed);
+
+        let mut solved_grid = match solution {
             Ok(grid) | Err(grid) => grid,
         };
 
