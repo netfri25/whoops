@@ -46,6 +46,10 @@ impl GridAnimation {
             schedule_update();
         }
     }
+
+    pub fn clear(&mut self) {
+        self.tile_animations.clear();
+    }
 }
 
 struct TileAnimation {

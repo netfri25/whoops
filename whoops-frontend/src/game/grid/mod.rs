@@ -48,6 +48,10 @@ where
         let layout = GridLayout::new(bounds, self.grid.width(), self.grid.height());
         self.animation.draw(&layout);
     }
+
+    pub fn clear_animations(&mut self) {
+        self.animation.clear();
+    }
 }
 
 impl<G> Grid for GameGrid<G>

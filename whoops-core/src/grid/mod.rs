@@ -4,13 +4,13 @@ use crate::tile::Tile;
 mod ext;
 pub use ext::*;
 
+pub mod allow_unknown;
 pub mod history;
-pub mod konst;
 pub mod lazy;
 pub mod tile_grid;
 
+pub use allow_unknown::AllowUnknown;
 pub use history::History;
-pub use konst::Konst;
 pub use lazy::Lazy;
 pub use tile_grid::TileGrid;
 

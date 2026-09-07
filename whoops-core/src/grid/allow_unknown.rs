@@ -5,31 +5,37 @@ use super::{Grid, GridExt};
 use crate::pos::Pos;
 use crate::tile::Tile;
 
-/// disallows modification to known tiles at creation
-pub struct Konst<G> {
+/// allows modification to unknown tiles at creation
+pub struct AllowUnknown<G> {
     grid: G,
-    preserve: HashSet<Pos>,
+    allow: HashSet<Pos>,
 }
 
-impl<G> Konst<G>
+impl<G> AllowUnknown<G>
 where
     G: Grid,
 {
     pub fn new(grid: G) -> Self {
-        let preserve = grid
-            .iter()
-            .filter_map(|(pos, tile)| (!tile.is_unknown()).then_some(pos))
-            .collect();
-
-        Self { grid, preserve }
+        let allow = Default::default();
+        let mut this = Self { grid, allow };
+        this.allow_unknown_update();
+        this
     }
 
     pub fn into_grid(self) -> G {
         self.grid
     }
+
+    pub fn allow_unknown_update(&mut self) {
+        self.allow = self
+            .grid
+            .iter()
+            .filter_map(|(pos, tile)| tile.is_unknown().then_some(pos))
+            .collect();
+    }
 }
 
-impl<G> Grid for Konst<G>
+impl<G> Grid for AllowUnknown<G>
 where
     G: Grid,
 {
@@ -38,7 +44,7 @@ where
     }
 
     fn set(&mut self, pos: Pos, tile: Tile) -> Option<Tile> {
-        if self.preserve.contains(&pos) {
+        if !self.allow.contains(&pos) {
             return None;
         }
 
@@ -54,7 +60,7 @@ where
     }
 }
 
-impl<G> From<G> for Konst<G>
+impl<G> From<G> for AllowUnknown<G>
 where
     G: Grid,
 {
@@ -63,13 +69,13 @@ where
     }
 }
 
-impl<G> DerefMut for Konst<G> {
+impl<G> DerefMut for AllowUnknown<G> {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.grid
     }
 }
 
-impl<G> Deref for Konst<G> {
+impl<G> Deref for AllowUnknown<G> {
     type Target = G;
 
     fn deref(&self) -> &Self::Target {

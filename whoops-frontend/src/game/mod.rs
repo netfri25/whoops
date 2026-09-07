@@ -1,11 +1,13 @@
 use macroquad::prelude::*;
-use whoops_core::grid::{Grid, History, Konst, Lazy, TileGrid};
+use whoops_core::grid::{AllowUnknown, Grid, History, Lazy, TileGrid};
 
 mod grid;
 use grid::GameGrid;
 use whoops_core::pos::Pos;
 use whoops_core::tile::Tile;
-use whoops_solver::{FillDotsWithValues, Solver, SolverExt, default_solver};
+use whoops_solver::{
+    AssertFull, AssertValid, FillDotsWithValues, Solver, SolverExt, default_solver,
+};
 
 use crate::grid_layout::GridLayout;
 
@@ -14,7 +16,7 @@ use crate::grid_layout::GridLayout;
 //  should I break this up to traits? like the Monad Transformers typeclasses in Haskell
 
 pub struct Game {
-    grid: Konst<Lazy<History<GameGrid<TileGrid>>>>,
+    grid: AllowUnknown<Lazy<History<GameGrid<TileGrid>>>>,
 }
 
 impl Game {
@@ -22,7 +24,7 @@ impl Game {
         let grid = GameGrid::new(grid);
         let grid = History::new(grid);
         let grid = Lazy::new(grid, false, [].into());
-        let grid = Konst::new(grid);
+        let grid = AllowUnknown::new(grid);
         Self { grid }
     }
 
@@ -51,13 +53,29 @@ impl Game {
 
         // NOTE: if we want to allow only pressing on the circle itself, we can add here a condition
         // that checks the mouse position (`point`) against `layout.center_of(pos)`
-        self.update_tile(pos, update_fn)
+        self.update_tile(pos, update_fn);
+        self.fill_with_values_if_finished();
     }
 
     fn update_tile(&mut self, pos: Pos, update_fn: impl FnOnce(Tile) -> Tile) {
         let src_tile = self.grid.get(pos).unwrap();
         let dst_tile = update_fn(src_tile);
         self.grid.set(pos, dst_tile);
+    }
+
+    fn fill_with_values_if_finished(&mut self) {
+        let mut solver = AssertFull
+            .and_then(AssertValid)
+            .and_then(FillDotsWithValues);
+        let grid: &mut TileGrid = &mut self.grid;
+
+        let ok = solver.solve(grid).is_ok();
+        drop(solver);
+
+        if ok {
+            self.grid.allow_unknown_update();
+            self.grid.clear_animations();
+        }
     }
 
     fn handle_keyboard_input(&mut self) {
@@ -98,6 +116,7 @@ impl Game {
         let history = solved_grid.take_history();
         self.grid.lazy_extend(history.into_iter().map(Into::into));
         self.grid.lazy_flush();
+        self.fill_with_values_if_finished();
     }
 }
 
