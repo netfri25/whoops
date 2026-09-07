@@ -70,7 +70,7 @@ impl Game {
         }
 
         if is_key_pressed(KeyCode::S) {
-            self.grid.step();
+            self.grid.lazy_step();
         }
 
         if is_key_pressed(KeyCode::T) {
@@ -92,7 +92,7 @@ impl Game {
 
         let history = solved_grid.take_history();
         self.grid.lazy_extend(history.into_iter().map(Into::into));
-        self.grid.flush_steps();
+        self.grid.lazy_flush();
     }
 }
 

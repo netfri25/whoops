@@ -42,19 +42,19 @@ where
         self.set_is_lazy(!self.is_lazy)
     }
 
-    pub fn step(&mut self) {
+    pub fn lazy_step(&mut self) {
         if let Some(step) = self.steps.pop_front() {
             self.apply_step(step)
         }
     }
 
-    pub fn flush_steps(&mut self) {
+    pub fn lazy_flush(&mut self) {
         while let Some(step) = self.steps.pop_front() {
             self.apply_step(step)
         }
     }
 
-    pub fn clear_steps(&mut self) {
+    pub fn lazy_clear_steps(&mut self) {
         self.steps.clear();
     }
 
