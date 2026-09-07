@@ -31,6 +31,10 @@ impl Tile {
         }
     }
 
+    pub fn is_value(&self) -> bool {
+        self.as_value().is_some()
+    }
+
     pub fn matches(&self, other: Self) -> bool {
         match (*self, other) {
             (Self::Dot(l), Self::Dot(r)) if l == 0 || r == 0 => true,

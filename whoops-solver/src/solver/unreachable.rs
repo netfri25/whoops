@@ -20,7 +20,7 @@ where
             let blocked = Offset::DIRECTIONS.into_iter().all(|direction| {
                 grid.iter_tile_offset(pos, direction)
                     .skip(1)
-                    .find(|tile| !tile.is_unknown())
+                    .find(|tile| tile.is_value() || tile.is_wall())
                     .is_none_or(|tile| tile.is_wall())
             });
 
