@@ -47,10 +47,13 @@ fn window_conf() -> macroquad::conf::Conf {
 async fn main() {
     #[rustfmt::skip]
     let grid = tile_grid![
-        [3, 2, _, _],
-        [_, _, x, _],
-        [_, 3, _, _],
-        [_, 4, _, 4],
+        [_, 7, _, _, _, 2, 2],
+        [_, _, _, _, 3, 3, _],
+        [_, 6, 5, _, _, _, _],
+        [5, _, 5, _, _, x, _],
+        [_, _, _, _, 5, x, _],
+        [_, _, _, 6, 6, _, 4],
+        [2, _, _, _, 3, _, _],
     ];
 
     let mut app = App::new(Some(Game::new(grid)));
