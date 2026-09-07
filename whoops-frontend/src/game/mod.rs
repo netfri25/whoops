@@ -6,7 +6,7 @@ use grid::GameGrid;
 use whoops_core::pos::Pos;
 use whoops_core::tile::Tile;
 use whoops_solver::{
-    AssertFull, AssertValid, FillDotsWithValues, Solver, SolverExt, default_solver,
+    AssertFull, AssertValid, FillDotsWithValues, Solver, SolverExt, default_solver_checked,
 };
 
 use crate::grid_layout::GridLayout;
@@ -32,6 +32,7 @@ impl Game {
         self.grid.update();
         self.handle_mouse_input(bounds);
         self.handle_keyboard_input();
+        self.fill_with_values_if_finished();
     }
 
     pub fn draw(&self, bounds: Rect) {
@@ -89,6 +90,7 @@ impl Game {
 
         if is_key_pressed(KeyCode::S) {
             self.grid.lazy_step();
+            self.fill_with_values_if_finished();
         }
 
         if is_key_pressed(KeyCode::T) {
@@ -103,7 +105,7 @@ impl Game {
     fn solve(&mut self) {
         let grid: TileGrid = self.grid.clone();
 
-        let mut solver = default_solver().and_then(FillDotsWithValues);
+        let mut solver = default_solver_checked().and_then(FillDotsWithValues);
         let start = std::time::Instant::now();
         let solution = solver.solve(History::new(grid));
         let elapsed = start.elapsed();
