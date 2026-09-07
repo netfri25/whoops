@@ -3,13 +3,13 @@ use whoops_core::offset::Offset;
 use whoops_core::pos::Pos;
 use whoops_core::tile::Tile;
 
-use crate::tile_rule::{TileRule, Response};
+use crate::tile_rule::{Response, TileRule};
 
 pub struct Minimum;
 
 impl<G> TileRule<G> for Minimum
 where
-    G: Grid
+    G: Grid,
 {
     fn solve_at(&mut self, pos: Pos, grid: &mut G) -> Option<Response> {
         let value = grid.get(pos)?.as_value()?;
@@ -46,7 +46,7 @@ where
                 // allow placing only on unknown tiles.
                 // this makes dot tiles with a value not lose their value.
                 if !target_tile.is_unknown() {
-                    continue
+                    continue;
                 }
 
                 applied = true;

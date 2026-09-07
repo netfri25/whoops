@@ -41,10 +41,7 @@ where
 impl<R> TileRuleSolver<R> {
     pub fn new(tile_rule: R) -> Self {
         let targets = VecDeque::new();
-        Self {
-            tile_rule,
-            targets,
-        }
+        Self { tile_rule, targets }
     }
 
     /// returns `true` if another step should be applied.
@@ -70,7 +67,7 @@ impl<R> TileRuleSolver<R> {
             }
 
             if response.applied {
-                return Some(true)
+                return Some(true);
             }
 
             let Some(new_target) = self.targets.pop_front() else {

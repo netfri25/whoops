@@ -1,4 +1,3 @@
-
 use whoops_core::grid::Grid;
 use whoops_core::pos::Pos;
 

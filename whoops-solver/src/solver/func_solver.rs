@@ -5,7 +5,7 @@ pub struct FuncSolver<F>(pub F);
 
 impl<F, G> Solver<G> for FuncSolver<F>
 where
-    F: FnMut(G) -> Result<G, G>
+    F: FnMut(G) -> Result<G, G>,
 {
     fn solve(&mut self, grid: G) -> Result<G, G> {
         (self.0)(grid)

@@ -64,7 +64,7 @@ where
 
     pub fn lazy_extend<I>(&mut self, iter: I)
     where
-        I: IntoIterator<Item = Step>
+        I: IntoIterator<Item = Step>,
     {
         self.steps.extend(iter)
     }
@@ -142,7 +142,7 @@ impl From<super::history::Modification> for Step {
 
 impl<G> From<super::history::History<G>> for Lazy<G>
 where
-    G: Grid
+    G: Grid,
 {
     fn from(mut value: super::history::History<G>) -> Self {
         let history = value.take_history();
