@@ -1,4 +1,4 @@
-use whoops_core::grid::Grid;
+use whoops_core::grid::{Grid, GridExt};
 
 use crate::{FuncSolver, Solver};
 
@@ -11,7 +11,7 @@ pub trait SolverExt<G>: Solver<G> {
     where
         B: Solver<G>;
 
-    fn assert_matches(self, pattern: &dyn Grid) -> impl Solver<G>
+    fn assert_full(self) -> impl Solver<G>
     where
         G: Grid;
 }
@@ -34,16 +34,17 @@ where
         FuncSolver(move |grid| self.solve(grid).or_else(|grid| other.solve(grid)))
     }
 
-    fn assert_matches(mut self, pattern: &dyn Grid) -> impl Solver<G>
+    fn assert_full(mut self) -> impl Solver<G>
     where
         G: Grid,
     {
         FuncSolver(move |grid| {
             let grid = self.solve(grid)?;
-            if grid.matches(pattern) {
-                Ok(grid)
-            } else {
+            let contains_unknown = grid.iter_tile().any(|tile| tile.is_unknown());
+            if contains_unknown {
                 Err(grid)
+            } else {
+                Ok(grid)
             }
         })
     }
