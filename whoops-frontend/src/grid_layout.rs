@@ -47,7 +47,7 @@ impl GridLayout {
         let norm = point - self.top_left();
         let br = self.bottom_right();
 
-        if norm.x < 0. || norm.y < 0. || norm.x >= br.x || norm.y >= br.y {
+        if norm.x < 0. || norm.y < 0. || point.x >= br.x || point.y >= br.y {
             return None;
         }
 
