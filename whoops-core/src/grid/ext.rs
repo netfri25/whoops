@@ -30,7 +30,10 @@ where
     }
 
     fn iter_pos_offset(&self, start: Pos, offset: Offset) -> impl Iterator<Item = Pos> {
+        let w = self.width();
+        let h = self.height();
         std::iter::successors(Some(start), move |pos| pos.add_offset(offset))
+            .take_while(move |pos| pos.x < w && pos.y < h)
     }
 
     fn iter_tile_offset(&self, start: Pos, offset: Offset) -> impl Iterator<Item = Tile> {
