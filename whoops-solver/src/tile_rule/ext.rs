@@ -1,4 +1,4 @@
-use crate::tile_rule::{FuncTileRule, Response, TileRule};
+use crate::tile_rule::{FuncTileRule, TileRule};
 
 pub trait TileRuleExt<G: ?Sized>: TileRule<G> {
     fn chain<B>(self, other: B) -> impl TileRule<G>
@@ -15,11 +15,11 @@ where
         B: TileRule<G>
     {
         FuncTileRule(move |pos, grid: &mut G| {
-            let response = self.solve_at(pos, grid)?;
-            match response {
-                Response::Keep => other.solve_at(pos, grid),
-                _ => Some(response)
+            let mut response = self.solve_at(pos, grid)?;
+            if !response.consumed {
+                response = response | other.solve_at(pos, grid)?;
             }
+            Some(response)
         })
     }
 }

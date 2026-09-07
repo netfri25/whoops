@@ -25,6 +25,7 @@ where
 
         let total: usize = max_in_direction.iter().sum();
 
+        let mut applied = false;
         for (direction, count) in Offset::DIRECTIONS.into_iter().zip(max_in_direction) {
             let rest_sum = total - count;
             let leftover = value.saturating_sub(rest_sum);
@@ -48,11 +49,11 @@ where
                     continue
                 }
 
+                applied = true;
                 grid.set(dot_position, Tile::Dot(0));
             }
         }
 
-        // this rule doesn't complete a tile, so it should be kept
-        Some(Response::Keep)
+        Some(Response::default().apply(applied))
     }
 }

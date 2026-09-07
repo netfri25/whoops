@@ -26,7 +26,7 @@ where
         // if the tile doesn't see the exact required amount, it hasn't been completed yet, so
         // there's nothing to block and the tile should be kept for later iterations.
         if total != n {
-            return Some(Response::Keep);
+            return Some(Response::default());
         }
 
         // here the tile is completed, so we place the red tiles around it to block its view
@@ -37,16 +37,21 @@ where
             let Some(wall_position) = pos.add_offset(offset) else {
                 // if the wall position is less than 0 in either of its axis, we should just ignore
                 // it and continue to the next iteration.
-                continue
+                continue;
             };
 
-            if let Some(target_tile) = grid.get(wall_position) && target_tile.is_unknown() {
+            if let Some(target_tile) = grid.get(wall_position)
+                && target_tile.is_unknown()
+            {
                 grid.set(wall_position, Tile::Wall);
             }
         }
 
         // after placing the walls around the completed tile, there's no use to checking that tile
         // ever again, and we can mark it as completed.
-        Some(Response::Consume)
+        Some(Response {
+            applied: true,
+            consumed: true,
+        })
     }
 }

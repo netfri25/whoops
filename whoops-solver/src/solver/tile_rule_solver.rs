@@ -5,8 +5,9 @@ use whoops_core::pos::Pos;
 
 use crate::tile_rule::block_complete::BlockComplete;
 use crate::tile_rule::minimum::Minimum;
+use crate::tile_rule::violation::Violation;
 use crate::{Solver};
-use crate::tile_rule::{Response, TileRule, TileRuleExt};
+use crate::tile_rule::{TileRule, TileRuleExt};
 
 pub struct TileRuleSolver<R> {
     tile_rule: R,
@@ -72,15 +73,22 @@ impl<R> TileRuleSolver<R> {
 
         // try to apply rule to at least one target
         loop {
-            if self.tile_rule.solve_at(target, grid)? == Response::Consume {
-                return Some(true);
+            let response = self.tile_rule.solve_at(target, grid)?;
+
+            if !response.consumed {
+                self.targets.push_back(target);
             }
 
-            self.targets.push_back(target);
-            target = self
-                .targets
-                .pop_front()
-                .expect("front must exist after push");
+            if response.applied {
+                return Some(true)
+            }
+
+            let Some(new_target) = self.targets.pop_front() else {
+                // no more targets left
+                return Some(false);
+            };
+
+            target = new_target;
 
             // if looped around without applying even once, then the grid can't be solved and
             // stepping should stop
@@ -95,6 +103,5 @@ pub fn default_tile_rule<G>() -> impl TileRule<G>
 where
     G: Grid
 {
-    // Minimum.chain(Violation).chain(BlockComplete)
-    Minimum.chain(BlockComplete)
+    Violation.chain(Minimum).chain(BlockComplete)
 }
