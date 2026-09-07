@@ -12,5 +12,6 @@ where
     let rule = tile_rule::default_tile_rule();
     TileRuleSolver::new(rule)
         .and_then(Unreachable)
-        .assert_full()
+        .and_then(AssertFull)
+        .and_then(AssertValid)
 }

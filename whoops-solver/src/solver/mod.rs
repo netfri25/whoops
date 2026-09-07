@@ -1,9 +1,13 @@
 
+mod assert_full;
+mod assert_valid;
 mod ext;
 mod func_solver;
 mod tile_rule_solver;
 mod unreachable;
 
+pub use assert_full::AssertFull;
+pub use assert_valid::AssertValid;
 pub use ext::*;
 pub use func_solver::*;
 pub use tile_rule_solver::TileRuleSolver;
