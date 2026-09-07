@@ -1,6 +1,7 @@
 mod assert_full;
 mod assert_valid;
 mod ext;
+mod fill_dots_with_values;
 mod func_solver;
 mod tile_rule_solver;
 mod unreachable;
@@ -8,6 +9,7 @@ mod unreachable;
 pub use assert_full::AssertFull;
 pub use assert_valid::AssertValid;
 pub use ext::*;
+pub use fill_dots_with_values::FillDotsWithValues;
 pub use func_solver::*;
 pub use tile_rule_solver::TileRuleSolver;
 pub use unreachable::Unreachable;
