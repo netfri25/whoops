@@ -30,7 +30,13 @@ where
             })
             .sum();
 
-        grid.set(pos, Tile::Dot(total));
+        let tile = if total == 0 {
+            Tile::Wall
+        } else {
+            Tile::Dot(total)
+        };
+
+        grid.set(pos, tile);
 
         Ok(grid)
     }
