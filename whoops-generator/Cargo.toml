@@ -1,0 +1,8 @@
+[package]
+name = "whoops-generator"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+whoops-core = { version = "0.1.0", path = "../whoops-core" }
+whoops-solver = { version = "0.1.0", path = "../whoops-solver" }
