@@ -1,4 +1,3 @@
+pub mod generator;
 
-pub mod params;
-
-pub use params::GeneratorParams;
+pub use generator::*;
