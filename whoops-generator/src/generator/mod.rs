@@ -1,8 +1,9 @@
 pub mod fixed;
+pub mod random;
 
 /// ability to generate a grid and its solution
 pub trait Generator<G> {
-    fn generate(self) -> Option<GeneratorOutput<G>>;
+    fn generate(self) -> GeneratorOutput<G>;
 }
 
 #[derive(Clone)]

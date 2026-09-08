@@ -16,8 +16,8 @@ impl<G> From<GeneratorOutput<G>> for FixedGenerator<G> {
 }
 
 impl<G> Generator<G> for FixedGenerator<G> {
-    fn generate(self) -> Option<GeneratorOutput<G>> {
-        Some(self.0)
+    fn generate(self) -> GeneratorOutput<G> {
+        self.0
     }
 }
 
@@ -25,7 +25,7 @@ impl<G> Generator<G> for &FixedGenerator<G>
 where
     G: Clone,
 {
-    fn generate(self) -> Option<GeneratorOutput<G>> {
-        Some(self.0.clone())
+    fn generate(self) -> GeneratorOutput<G> {
+        self.0.clone()
     }
 }
