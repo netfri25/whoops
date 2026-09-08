@@ -6,7 +6,7 @@ use grid::GameGrid;
 use whoops_core::pos::Pos;
 use whoops_core::tile::Tile;
 use whoops_solver::{
-    AssertFull, AssertValid, FillDotsWithValues, Solver, SolverExt, default_solver_checked,
+    AssertFull, AssertValid, Solver, SolverExt, UpdateAllValues, default_solver_checked,
 };
 
 use crate::grid_layout::GridLayout;
@@ -65,9 +65,7 @@ impl Game {
     }
 
     fn fill_with_values_if_finished(&mut self) {
-        let mut solver = AssertFull
-            .and_then(AssertValid)
-            .and_then(FillDotsWithValues);
+        let mut solver = AssertFull.and_then(AssertValid).and_then(UpdateAllValues);
         let grid: &mut TileGrid = &mut self.grid;
 
         let ok = solver.solve(grid).is_ok();
@@ -105,7 +103,7 @@ impl Game {
     fn solve(&mut self) {
         let grid: TileGrid = self.grid.clone();
 
-        let mut solver = default_solver_checked().and_then(FillDotsWithValues);
+        let mut solver = default_solver_checked().and_then(UpdateAllValues);
         let start = std::time::Instant::now();
         let solution = solver.solve(History::new(grid));
         let elapsed = start.elapsed();
