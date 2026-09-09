@@ -62,11 +62,11 @@ impl<R> TileRuleSolver<R> {
         loop {
             let response = self.tile_rule.solve_at(target, grid)?;
 
-            if !response.consumed {
+            if !response.is_consumed() {
                 self.targets.push_back(target);
             }
 
-            if response.applied {
+            if response.is_applied() {
                 return Some(true);
             }
 

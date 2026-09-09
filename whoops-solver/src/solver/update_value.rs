@@ -16,7 +16,7 @@ where
         let pos = self.0;
 
         // when not given a dot, return Err(grid)
-        if !matches!(grid.get(pos), Some(Tile::Dot(_))) {
+        if !grid.get(pos).is_some_and(|tile| tile.is_dot()) {
             return Err(grid);
         }
 
