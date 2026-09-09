@@ -17,6 +17,7 @@ pub struct GridAnimation {
 
 impl GridAnimation {
     pub fn new() -> Self {
+        schedule_update();
         Self::default()
     }
 
