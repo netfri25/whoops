@@ -4,3 +4,4 @@ members = ["whoops-core", "whoops-frontend", "whoops-generator", "whoops-solver"
 
 [workspace.dependencies]
 thiserror = "2.0.20"
+rand = "0.10.2"

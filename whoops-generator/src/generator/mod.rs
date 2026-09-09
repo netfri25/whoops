@@ -11,3 +11,15 @@ pub struct GeneratorOutput<G> {
     pub grid: G,
     pub solution: G,
 }
+
+impl<G> GeneratorOutput<G> {
+    pub fn into<H>(self) -> GeneratorOutput<H>
+    where
+        H: From<G>,
+    {
+        GeneratorOutput {
+            grid: self.grid.into(),
+            solution: self.solution.into(),
+        }
+    }
+}
