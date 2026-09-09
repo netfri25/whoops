@@ -17,7 +17,7 @@ where
         FuncTileRule(move |pos, grid: &mut G| {
             let mut response = self.solve_at(pos, grid)?;
             if !response.is_consumed() {
-                response = other.solve_at(pos, grid)?;
+                response = other.solve_at(pos, grid)?.max(response);
             }
             Some(response)
         })
