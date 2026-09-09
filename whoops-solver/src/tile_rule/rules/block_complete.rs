@@ -49,9 +49,6 @@ where
 
         // after placing the walls around the completed tile, there's no use to checking that tile
         // ever again, and we can mark it as completed.
-        Some(Response {
-            applied: true,
-            consumed: true,
-        })
+        Some(Response::Consumed)
     }
 }
