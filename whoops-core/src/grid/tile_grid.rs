@@ -1,3 +1,5 @@
+use std::fmt;
+
 use super::Grid;
 
 use crate::pos::Pos;
@@ -5,7 +7,7 @@ use crate::tile::Tile;
 
 /// invariant: tiles.len() % width == 0
 /// simple grid implementation that keeps tiles as a 1-dim array of Tile
-#[derive(Clone)]
+#[derive(Clone, PartialEq, Eq)]
 pub struct TileGrid {
     tiles: Box<[Tile]>,
     width: u32,
@@ -37,6 +39,18 @@ impl TileGrid {
 
     fn at_mut(&mut self, index: usize) -> Option<&mut Tile> {
         self.tiles.get_mut(index)
+    }
+}
+
+impl fmt::Debug for TileGrid {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        writeln!(f, "TileGrid(")?;
+
+        for chunk in self.tiles.chunks(self.width as usize) {
+            writeln!(f, "{:?}", chunk)?;
+        }
+
+        writeln!(f, ")")
     }
 }
 
