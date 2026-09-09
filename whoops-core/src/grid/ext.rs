@@ -11,6 +11,10 @@ pub trait GridExt {
     fn iter_pos_offset(&self, start: Pos, offset: Offset) -> impl Iterator<Item = Pos> + 'static;
     fn iter_tile_offset(&self, start: Pos, offset: Offset) -> impl Iterator<Item = Tile>;
     fn iter_offset(&self, start: Pos, offset: Offset) -> impl Iterator<Item = (Pos, Tile)>;
+
+    /// tries to match a different grid as a pattern, and returns `true` if they match.
+    /// uses the `Tile::matches` method to compare between tiles
+    fn matches(&self, pattern: &impl Grid) -> bool;
 }
 
 impl<G> GridExt for G
@@ -44,6 +48,18 @@ where
     fn iter_offset(&self, start: Pos, offset: Offset) -> impl Iterator<Item = (Pos, Tile)> {
         self.iter_pos_offset(start, offset)
             .flat_map(|pos| self.get(pos).map(|tile| (pos, tile)))
+    }
+
+    fn matches(&self, pattern: &impl Grid) -> bool {
+        let width = self.width();
+        let height = self.height();
+        if width != pattern.width() || height != pattern.height() {
+            return false;
+        }
+
+        self.iter_tile()
+            .zip(pattern.iter_tile())
+            .all(|(value, expected)| value.matches(expected))
     }
 }
 
