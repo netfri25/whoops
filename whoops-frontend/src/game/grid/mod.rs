@@ -94,7 +94,7 @@ impl<G> Deref for GameGrid<G> {
     }
 }
 
-pub fn draw_grid(grid: &dyn Grid, bounds: Rect) {
+pub fn draw_grid(grid: &impl Grid, bounds: Rect) {
     draw_rectangle(bounds.x, bounds.y, bounds.w, bounds.h, BACKGROUND);
 
     let w = grid.width();
