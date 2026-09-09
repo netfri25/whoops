@@ -1,10 +1,13 @@
 use macroquad::prelude::*;
+use ::rand::prelude::{Rng, SmallRng};
 use whoops_core::grid::{AllowUnknown, Grid, History, Lazy, TileGrid};
 
 mod grid;
 use grid::GameGrid;
 use whoops_core::pos::Pos;
 use whoops_core::tile::Tile;
+use whoops_generator::{Generator, GeneratorOutput};
+use whoops_generator::random::{self, RandomGenerator};
 use whoops_solver::{
     AssertFull, AssertValid, Solver, SolverExt, UpdateAllValues, default_solver_checked,
 };
@@ -15,17 +18,17 @@ use crate::grid_layout::GridLayout;
 //  Rust warns me that this is a complex type, so I put it as a type alias.
 //  should I break this up to traits? like the Monad Transformers typeclasses in Haskell
 
+type OhnO = AllowUnknown<Lazy<History<GameGrid<TileGrid>>>>;
+
 pub struct Game {
-    grid: AllowUnknown<Lazy<History<GameGrid<TileGrid>>>>,
+    grid: OhnO,
+    rng: SmallRng,
 }
 
 impl Game {
-    pub fn new(grid: TileGrid) -> Self {
-        let grid = GameGrid::new(grid);
-        let grid = History::new(grid);
-        let grid = Lazy::new(grid, false, [].into());
-        let grid = AllowUnknown::new(grid);
-        Self { grid }
+    pub fn new(rng: SmallRng, grid: TileGrid) -> Self {
+        let grid = construct_an_abomination_of_a_grid(grid);
+        Self { grid, rng }
     }
 
     pub fn update(&mut self, bounds: Rect) {
@@ -98,6 +101,28 @@ impl Game {
         if is_key_pressed(KeyCode::C) {
             self.solve();
         }
+
+        let keys = [
+            (KeyCode::Key3, 3, 3),
+            (KeyCode::Key4, 4, 4),
+            (KeyCode::Key5, 5, 5),
+            (KeyCode::Key6, 6, 6),
+            (KeyCode::Key7, 7, 7),
+            (KeyCode::Key8, 8, 8),
+            (KeyCode::Key9, 9, 9),
+            (KeyCode::Key0, 10, 10),
+        ];
+
+        for (key, w, h) in  keys {
+            if is_key_pressed(key) {
+                self.regenerate(w, h)
+            }
+        }
+    }
+
+    fn regenerate(&mut self, width: u32, height: u32) {
+        let output = generate(&mut self.rng, width, height);
+        self.grid = construct_an_abomination_of_a_grid(output.grid);
     }
 
     fn solve(&mut self) {
@@ -134,4 +159,25 @@ fn prev_tile(tile: Tile) -> Tile {
         Tile::Wall => Tile::Dot(0),
         Tile::Dot(_) => Tile::Unknown,
     }
+}
+
+fn generate(rng: impl Rng, width: u32, height: u32) -> GeneratorOutput<TileGrid> {
+    let params = random::Params::new(width, height);
+    let generator = RandomGenerator::new(rng, params);
+
+    let start = std::time::Instant::now();
+    let output = generator.generate();
+    let elapsed = start.elapsed();
+    eprintln!("generation took {:?}", elapsed);
+
+    output
+}
+
+#[allow(clippy::let_and_return)]
+fn construct_an_abomination_of_a_grid(grid: TileGrid) -> OhnO {
+    let grid = GameGrid::new(grid);
+    let grid = History::new(grid);
+    let grid = Lazy::new(grid, false, [].into());
+    let grid = AllowUnknown::new(grid);
+    grid
 }
