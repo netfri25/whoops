@@ -20,8 +20,8 @@ pub fn default_tile_rule<G>() -> impl TileRule<G>
 where
     G: Grid,
 {
-    rules::Violation
-        .chain(rules::Minimum)
+    rules::Minimum
+        .chain(rules::Violation)
         .chain(rules::BlockComplete)
 }
 
