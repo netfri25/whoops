@@ -17,4 +17,3 @@ pub trait GridExt: GridIter {
 }
 
 impl<G> GridExt for G where G: GridIter + ?Sized {}
-

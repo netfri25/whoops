@@ -51,7 +51,7 @@ impl Distribution<TileGrid> for GridDistrbution {
             grid.set(pos, Tile::Wall);
 
             for direction in Offset::DIRECTIONS {
-                for pos in grid.iter_pos_offset(pos, direction).skip(1)  {
+                for pos in grid.iter_pos_offset(pos, direction).skip(1) {
                     if grid.get(pos).is_some_and(|tile| tile.is_wall()) {
                         break;
                     }

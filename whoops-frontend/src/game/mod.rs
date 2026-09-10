@@ -1,13 +1,13 @@
-use macroquad::prelude::*;
 use ::rand::prelude::Rng;
+use macroquad::prelude::*;
 use whoops_core::grid::{AllowUnknown, Grid, History, Lazy, TileGrid};
 
 mod grid;
 use grid::GameGrid;
 use whoops_core::pos::Pos;
 use whoops_core::tile::Tile;
-use whoops_generator::{Generator, GeneratorOutput};
 use whoops_generator::random::{self, RandomGenerator};
+use whoops_generator::{Generator, GeneratorOutput};
 use whoops_solver::{
     AssertFull, AssertValid, Solver, SolverExt, UpdateAllValues, default_solver_checked,
 };
@@ -27,7 +27,7 @@ pub struct Game<R> {
 
 impl<R> Game<R>
 where
-    R: Rng
+    R: Rng,
 {
     pub fn new(rng: R, grid: TileGrid) -> Self {
         let grid = construct_an_abomination_of_a_grid(grid);
@@ -122,7 +122,7 @@ where
             (KeyCode::Key0, 10, 10),
         ];
 
-        for (key, w, h) in  keys {
+        for (key, w, h) in keys {
             if is_key_pressed(key) {
                 self.regenerate(w, h)
             }

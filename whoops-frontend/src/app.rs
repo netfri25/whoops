@@ -1,5 +1,5 @@
-use macroquad::prelude::*;
 use ::rand::prelude::Rng;
+use macroquad::prelude::*;
 
 use crate::game::Game;
 
@@ -10,7 +10,7 @@ pub struct App<R> {
 
 impl<R> App<R>
 where
-    R: Rng
+    R: Rng,
 {
     pub fn new(game: Option<Game<R>>) -> Self {
         Self { game }

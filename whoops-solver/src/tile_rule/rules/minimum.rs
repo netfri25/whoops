@@ -54,6 +54,10 @@ where
             }
         }
 
-        Some(if applied { Response::Applied } else { Response::Ignored })
+        Some(if applied {
+            Response::Applied
+        } else {
+            Response::Ignored
+        })
     }
 }
