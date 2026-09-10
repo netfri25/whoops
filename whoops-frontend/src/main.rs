@@ -5,9 +5,9 @@ use ::rand::prelude::ThreadRng;
 use crate::app::App;
 use crate::game::Game;
 
-mod app;
-mod game;
-mod grid_layout;
+pub mod app;
+pub mod game;
+pub mod grid_layout;
 
 const WIDTH: i32 = 800;
 const HEIGHT: i32 = 640;
