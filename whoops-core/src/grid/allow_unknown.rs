@@ -1,7 +1,8 @@
 use std::collections::HashSet;
 use std::ops::{Deref, DerefMut};
 
-use super::{Grid, GridExt};
+use super::Grid;
+use crate::grid::GridIter;
 use crate::pos::Pos;
 use crate::tile::Tile;
 
@@ -13,7 +14,7 @@ pub struct AllowUnknown<G> {
 
 impl<G> AllowUnknown<G>
 where
-    G: Grid,
+    G: GridIter,
 {
     pub fn new(grid: G) -> Self {
         let allow = Default::default();
@@ -62,7 +63,7 @@ where
 
 impl<G> From<G> for AllowUnknown<G>
 where
-    G: Grid,
+    G: GridIter,
 {
     fn from(value: G) -> Self {
         Self::new(value)

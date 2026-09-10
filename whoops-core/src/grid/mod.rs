@@ -2,7 +2,9 @@ use crate::pos::Pos;
 use crate::tile::Tile;
 
 mod ext;
+mod iter;
 pub use ext::*;
+pub use iter::*;
 
 pub mod allow_unknown;
 pub mod history;
@@ -28,24 +30,6 @@ pub trait Grid {
 
     /// returns the height of the grid
     fn height(&self) -> u32;
-
-    /// tries to match a different grid as a pattern, and returns `true` if they match.
-    /// uses the `Tile::matches` method to compare between tiles
-    fn matches(&self, pattern: &dyn Grid) -> bool {
-        let width = self.width();
-        let height = self.height();
-        if width != pattern.width() || height != pattern.height() {
-            return false;
-        }
-
-        self.iter_tile()
-            .zip(pattern.iter_tile())
-            .all(|(value, expected)| value.matches(expected))
-    }
-
-    fn is_full(&self) -> bool {
-        !self.iter_tile().any(|tile| tile.is_unknown())
-    }
 }
 
 impl<G> Grid for Box<G>

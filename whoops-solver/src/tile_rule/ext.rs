@@ -10,14 +10,15 @@ impl<R, G> TileRuleExt<G> for R
 where
     R: TileRule<G>,
 {
+    #[inline(always)]
     fn chain<B>(mut self, mut other: B) -> impl TileRule<G>
     where
         B: TileRule<G>,
     {
         FuncTileRule(move |pos, grid: &mut G| {
             let mut response = self.solve_at(pos, grid)?;
-            if !response.consumed {
-                response = response | other.solve_at(pos, grid)?;
+            if !response.is_consumed() {
+                response = other.solve_at(pos, grid)?.max(response);
             }
             Some(response)
         })

@@ -3,7 +3,7 @@ use std::sync::LazyLock;
 
 use macroquad::prelude::*;
 
-use whoops_core::grid::{Grid, GridExt};
+use whoops_core::grid::{Grid, GridIter};
 use whoops_core::pos::Pos;
 use whoops_core::tile::Tile;
 
@@ -32,7 +32,7 @@ pub struct GameGrid<G> {
 
 impl<G> GameGrid<G>
 where
-    G: Grid,
+    G: GridIter,
 {
     pub fn new(grid: G) -> Self {
         let animation = GridAnimation::new();
@@ -94,7 +94,7 @@ impl<G> Deref for GameGrid<G> {
     }
 }
 
-pub fn draw_grid(grid: &dyn Grid, bounds: Rect) {
+pub fn draw_grid(grid: &impl GridIter, bounds: Rect) {
     draw_rectangle(bounds.x, bounds.y, bounds.w, bounds.h, BACKGROUND);
 
     let w = grid.width();

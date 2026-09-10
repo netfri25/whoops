@@ -5,5 +5,7 @@ edition = "2024"
 
 [dependencies]
 macroquad = "0.4.16"
+rand = { workspace = true }
 whoops-core = { path = "../whoops-core" }
+whoops-generator = { path = "../whoops-generator" }
 whoops-solver = { path = "../whoops-solver" }

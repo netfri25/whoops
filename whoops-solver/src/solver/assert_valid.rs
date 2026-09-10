@@ -1,4 +1,4 @@
-use whoops_core::grid::{Grid, GridExt};
+use whoops_core::grid::GridIter;
 use whoops_core::offset::Offset;
 
 use crate::Solver;
@@ -8,7 +8,7 @@ pub struct AssertValid;
 
 impl<G> Solver<G> for AssertValid
 where
-    G: Grid,
+    G: GridIter,
 {
     fn solve(&mut self, grid: G) -> Result<G, G> {
         // make sure no value tile sees more than expected

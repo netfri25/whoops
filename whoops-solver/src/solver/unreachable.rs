@@ -1,4 +1,4 @@
-use whoops_core::grid::{Grid, GridExt};
+use whoops_core::grid::GridIter;
 use whoops_core::offset::Offset;
 use whoops_core::tile::Tile;
 
@@ -9,7 +9,7 @@ pub struct Unreachable;
 
 impl<G> Solver<G> for Unreachable
 where
-    G: Grid,
+    G: GridIter,
 {
     fn solve(&mut self, mut grid: G) -> Result<G, G> {
         for pos in grid.iter_pos() {

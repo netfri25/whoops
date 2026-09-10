@@ -1,4 +1,4 @@
-use whoops_core::grid::{Grid, GridExt};
+use whoops_core::grid::GridIter;
 
 use crate::Solver;
 
@@ -7,7 +7,7 @@ pub struct AssertFull;
 
 impl<G> Solver<G> for AssertFull
 where
-    G: Grid,
+    G: GridIter,
 {
     fn solve(&mut self, grid: G) -> Result<G, G> {
         let contains_unknown = grid.iter_tile().any(|tile| tile.is_unknown());

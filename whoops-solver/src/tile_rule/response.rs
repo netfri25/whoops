@@ -1,39 +1,17 @@
-use std::ops::{BitAnd, BitOr};
-
-#[derive(Debug, Clone, Copy, Default)]
-pub struct Response {
-    pub applied: bool,
-    pub consumed: bool,
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, PartialOrd, Ord)]
+pub enum Response {
+    #[default]
+    Ignored,
+    Applied,
+    Consumed,
 }
 
 impl Response {
-    pub fn apply(self, applied: bool) -> Self {
-        Self { applied, ..self }
+    pub fn is_applied(self) -> bool {
+        self >= Self::Applied
     }
 
-    pub fn consume(self, consumed: bool) -> Self {
-        Self { consumed, ..self }
-    }
-}
-
-impl BitOr for Response {
-    type Output = Self;
-
-    fn bitor(self, rhs: Self) -> Self::Output {
-        Self {
-            applied: self.applied | rhs.applied,
-            consumed: self.consumed | rhs.consumed,
-        }
-    }
-}
-
-impl BitAnd for Response {
-    type Output = Self;
-
-    fn bitand(self, rhs: Self) -> Self::Output {
-        Self {
-            applied: self.applied & rhs.applied,
-            consumed: self.consumed & rhs.consumed,
-        }
+    pub fn is_consumed(self) -> bool {
+        self >= Self::Consumed
     }
 }

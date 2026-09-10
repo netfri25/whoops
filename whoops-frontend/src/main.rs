@@ -1,5 +1,6 @@
 use macroquad::prelude::*;
 
+use ::rand::prelude::{SmallRng, SeedableRng};
 use whoops_core::tile_grid;
 
 use crate::app::App;
@@ -55,7 +56,8 @@ async fn main() {
         [_, 1, _, x, _, _],
     ];
 
-    let mut app = App::new(Some(Game::new(grid)));
+    let rng = SmallRng::seed_from_u64(12);
+    let mut app = App::new(Some(Game::new(rng, grid)));
 
     loop {
         clear_background(BLACK);
