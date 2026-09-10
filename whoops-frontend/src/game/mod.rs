@@ -86,6 +86,7 @@ where
         if ok {
             self.grid.allow_unknown_update();
             self.grid.clear_animations();
+            self.grid.take_history(); // remove history
         }
     }
 
@@ -96,11 +97,10 @@ where
             } else {
                 self.grid.undo();
             }
-            self.fill_with_values_if_finished();
         }
 
         if is_key_pressed(KeyCode::S) {
-            self.grid.lazy_step();
+            self.lazy_step();
             self.fill_with_values_if_finished();
         }
 
@@ -109,7 +109,8 @@ where
         }
 
         if is_key_pressed(KeyCode::C) {
-            self.solve();
+            self.complete_grid();
+            self.fill_with_values_if_finished();
         }
 
         let keys = [
@@ -135,10 +136,24 @@ where
         self.grid = construct_an_abomination_of_a_grid(output.grid);
     }
 
+    fn lazy_step(&mut self) {
+        if self.grid.is_lazy_empty() {
+            self.solve();
+        }
+
+        self.grid.lazy_step();
+    }
+
+    fn complete_grid(&mut self) {
+        self.solve();
+        self.grid.lazy_flush();
+    }
+
+    /// solve the grid and add the steps to the solution into the lazy grid
     fn solve(&mut self) {
         let grid: TileGrid = self.grid.clone();
 
-        let mut solver = default_solver_checked().and_then(UpdateAllValues);
+        let mut solver = default_solver_checked();
         let start = std::time::Instant::now();
         let solution = solver.solve(History::new(grid));
         let elapsed = start.elapsed();

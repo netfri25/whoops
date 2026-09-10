@@ -38,6 +38,10 @@ where
         self.is_lazy
     }
 
+    pub fn is_lazy_empty(&self) -> bool {
+        self.steps.is_empty()
+    }
+
     pub fn toggle_is_lazy(&mut self) {
         self.set_is_lazy(!self.is_lazy)
     }
