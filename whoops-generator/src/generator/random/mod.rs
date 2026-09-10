@@ -1,7 +1,7 @@
 use rand::prelude::*;
 use whoops_core::grid::{GridExt, GridIter, TileGrid};
 use whoops_core::tile::Tile;
-use whoops_solver::{Solver, default_solver_checked};
+use whoops_solver::{Solver, default_solver};
 
 use crate::generator::{Generator, GeneratorOutput};
 
@@ -51,7 +51,7 @@ impl<R> RandomGenerator<R> {
                 continue;
             };
 
-            let solvable = default_solver_checked()
+            let solvable = default_solver()
                 .solve(grid.clone())
                 .is_ok_and(|solved| solved.matches(solution));
 
