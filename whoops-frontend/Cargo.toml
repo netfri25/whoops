@@ -9,3 +9,7 @@ rand = { workspace = true }
 whoops-core = { path = "../whoops-core" }
 whoops-generator = { path = "../whoops-generator" }
 whoops-solver = { path = "../whoops-solver" }
+
+[[bin]]
+name = "whoops"
+path = "src/main.rs"
