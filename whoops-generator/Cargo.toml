@@ -7,3 +7,19 @@ edition = "2024"
 rand = { workspace = true }
 whoops-core = { version = "0.1.0", path = "../whoops-core" }
 whoops-solver = { version = "0.1.0", path = "../whoops-solver" }
+
+[dev-dependencies]
+criterion = "0.5.1"
+pretty_assertions = "1.4.1"
+
+[[bench]]
+name = "distr"
+harness = false
+
+[[bench]]
+name = "generator"
+harness = false
+
+[[bench]]
+name = "solver"
+harness = false
