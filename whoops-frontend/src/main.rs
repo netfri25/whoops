@@ -1,7 +1,6 @@
 use macroquad::prelude::*;
 
-use ::rand::prelude::{SmallRng, SeedableRng};
-use whoops_core::tile_grid;
+use ::rand::prelude::ThreadRng;
 
 use crate::app::App;
 use crate::game::Game;
@@ -46,18 +45,9 @@ fn window_conf() -> macroquad::conf::Conf {
 
 #[macroquad::main(window_conf)]
 async fn main() {
-    #[rustfmt::skip]
-    let grid = tile_grid![
-        [_, _, _, x, 2, _],
-        [_, _, _, _, 2, _],
-        [5, 5, 6, 4, _, _],
-        [_, 3, _, _, _, 4],
-        [_, _, _, _, 5, _],
-        [_, 1, _, x, _, _],
-    ];
-
-    let rng = SmallRng::seed_from_u64(12);
-    let mut app = App::new(Some(Game::new(rng, grid)));
+    let rng = ThreadRng::default();
+    let game = Game::from_rng(rng, 6, 6);
+    let mut app = App::new(Some(game));
 
     loop {
         clear_background(BLACK);

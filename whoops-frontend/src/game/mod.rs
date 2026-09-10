@@ -1,5 +1,5 @@
 use macroquad::prelude::*;
-use ::rand::prelude::{Rng, SmallRng};
+use ::rand::prelude::Rng;
 use whoops_core::grid::{AllowUnknown, Grid, History, Lazy, TileGrid};
 
 mod grid;
@@ -20,14 +20,23 @@ use crate::grid_layout::GridLayout;
 
 type OhnO = AllowUnknown<Lazy<History<GameGrid<TileGrid>>>>;
 
-pub struct Game {
+pub struct Game<R> {
     grid: OhnO,
-    rng: SmallRng,
+    rng: R,
 }
 
-impl Game {
-    pub fn new(rng: SmallRng, grid: TileGrid) -> Self {
+impl<R> Game<R>
+where
+    R: Rng
+{
+    pub fn new(rng: R, grid: TileGrid) -> Self {
         let grid = construct_an_abomination_of_a_grid(grid);
+        Self { grid, rng }
+    }
+
+    pub fn from_rng(mut rng: R, width: u32, height: u32) -> Self {
+        let output = generate(&mut rng, width, height);
+        let grid = construct_an_abomination_of_a_grid(output.grid);
         Self { grid, rng }
     }
 

@@ -1,14 +1,18 @@
 use macroquad::prelude::*;
+use ::rand::prelude::Rng;
 
 use crate::game::Game;
 
 #[derive(Default)]
-pub struct App {
-    game: Option<Game>,
+pub struct App<R> {
+    game: Option<Game<R>>,
 }
 
-impl App {
-    pub fn new(game: Option<Game>) -> Self {
+impl<R> App<R>
+where
+    R: Rng
+{
+    pub fn new(game: Option<Game<R>>) -> Self {
         Self { game }
     }
 
