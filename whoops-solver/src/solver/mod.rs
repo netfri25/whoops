@@ -1,5 +1,6 @@
 mod assert_full;
 mod assert_valid;
+mod assert_matches;
 mod ext;
 mod func_solver;
 mod tile_rule_solver;
@@ -9,6 +10,7 @@ mod update_value;
 
 pub use assert_full::AssertFull;
 pub use assert_valid::AssertValid;
+pub use assert_matches::AssertMatches;
 pub use ext::*;
 pub use func_solver::*;
 pub use tile_rule_solver::TileRuleSolver;
@@ -28,7 +30,7 @@ pub trait Solver<G> {
 
 impl<S, G> Solver<G> for &mut S
 where
-    S: Solver<G>,
+    S: Solver<G> + ?Sized,
 {
     fn solve(&mut self, grid: G) -> Result<G, G> {
         (**self).solve(grid)
@@ -41,5 +43,18 @@ where
 {
     fn solve(&mut self, grid: G) -> Result<G, G> {
         (**self).solve(grid)
+    }
+}
+
+impl<S, G> Solver<G> for Option<S>
+where
+    S: Solver<G>
+{
+    fn solve(&mut self, grid: G) -> Result<G, G> {
+        let Some(solver) = self.as_mut() else {
+            return Ok(grid);
+        };
+
+        solver.solve(grid)
     }
 }

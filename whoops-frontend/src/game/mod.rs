@@ -1,15 +1,16 @@
-use macroquad::prelude::*;
 use ::rand::prelude::{Rng, SmallRng};
+use macroquad::prelude::*;
 use whoops_core::grid::{AllowUnknown, Grid, History, Lazy, TileGrid};
 
 mod grid;
 use grid::GameGrid;
 use whoops_core::pos::Pos;
 use whoops_core::tile::Tile;
-use whoops_generator::{Generator, GeneratorOutput};
 use whoops_generator::random::{self, RandomGenerator};
+use whoops_generator::{Generator, GeneratorOutput};
 use whoops_solver::{
-    AssertFull, AssertValid, Solver, SolverExt, UpdateAllValues, default_solver_checked,
+    AssertFull, AssertMatches, AssertValid, FuncSolver, Solver, SolverExt, UpdateAllValues,
+    default_solver_checked,
 };
 
 use crate::grid_layout::GridLayout;
@@ -22,20 +23,25 @@ type OhnO = AllowUnknown<Lazy<History<GameGrid<TileGrid>>>>;
 
 pub struct Game {
     grid: OhnO,
+    solution: Option<TileGrid>,
     rng: SmallRng,
 }
 
 impl Game {
     pub fn new(rng: SmallRng, grid: TileGrid) -> Self {
         let grid = construct_an_abomination_of_a_grid(grid);
-        Self { grid, rng }
+        let solution = None;
+        Self {
+            grid,
+            solution,
+            rng,
+        }
     }
 
     pub fn update(&mut self, bounds: Rect) {
         self.grid.update();
         self.handle_mouse_input(bounds);
         self.handle_keyboard_input();
-        self.fill_with_values_if_finished();
     }
 
     pub fn draw(&self, bounds: Rect) {
@@ -68,13 +74,35 @@ impl Game {
     }
 
     fn fill_with_values_if_finished(&mut self) {
-        let mut solver = AssertFull.and_then(AssertValid).and_then(UpdateAllValues);
-        let grid: &mut TileGrid = &mut self.grid;
+        let solution = self.solution.as_ref();
 
-        let ok = solver.solve(grid).is_ok();
-        drop(solver);
+        // TODO:
+        //  finish the other todo, and then move this to a `&self` method that checks if the grid
+        //  is correct, and another method that fills the grid with values, either using
+        //  UpdateAllValues or by using the solution
+        let correct = {
+            let verifyer = FuncSolver(|grid| {
+                if let Some(solution) = solution {
+                    // TODO:
+                    //  break Grid trait into two traits: Grid and GridMut. this way, Grid only
+                    //  borrows while GridMut can also mutate (using the `set` method), and then we
+                    //  can implement Grid for every type that Derefs to Grid, and thus make this
+                    //  &solution instead of solution.clone()
+                    AssertMatches(solution.clone()).solve(grid)
+                } else {
+                    AssertValid.solve(grid)
+                }
+            });
 
-        if ok {
+            let grid: &mut TileGrid = &mut self.grid;
+            AssertFull
+                .and_then(verifyer)
+                .and_then(UpdateAllValues)
+                .solve(grid)
+                .is_ok()
+        };
+
+        if correct {
             self.grid.allow_unknown_update();
             self.grid.clear_animations();
         }
@@ -113,7 +141,7 @@ impl Game {
             (KeyCode::Key0, 10, 10),
         ];
 
-        for (key, w, h) in  keys {
+        for (key, w, h) in keys {
             if is_key_pressed(key) {
                 self.regenerate(w, h)
             }
@@ -123,6 +151,7 @@ impl Game {
     fn regenerate(&mut self, width: u32, height: u32) {
         let output = generate(&mut self.rng, width, height);
         self.grid = construct_an_abomination_of_a_grid(output.grid);
+        self.solution = Some(output.solution);
     }
 
     fn solve(&mut self) {
