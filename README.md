@@ -27,3 +27,5 @@ whoops
 | 3..9 | generate a new `NxN` grid |
 | 0 | generate a `10x10` grid |
 | t | toggle lazy step |
+| left click | cycle to next tile |
+| right click | cycle to previous tile |
