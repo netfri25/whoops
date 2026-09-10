@@ -1,4 +1,4 @@
-use whoops_core::grid::{Grid, GridExt};
+use whoops_core::grid::GridIter;
 use whoops_core::offset::Offset;
 use whoops_core::pos::Pos;
 use whoops_core::tile::Tile;
@@ -10,7 +10,7 @@ pub struct UpdateValue(pub Pos);
 
 impl<G> Solver<G> for UpdateValue
 where
-    G: Grid,
+    G: GridIter,
 {
     fn solve(&mut self, mut grid: G) -> Result<G, G> {
         let pos = self.0;

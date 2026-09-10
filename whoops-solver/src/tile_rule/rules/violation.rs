@@ -1,4 +1,4 @@
-use whoops_core::grid::{Grid, GridExt};
+use whoops_core::grid::{Grid, GridIter};
 use whoops_core::offset::Offset;
 use whoops_core::pos::Pos;
 use whoops_core::tile::Tile;
@@ -9,7 +9,7 @@ pub struct Violation;
 
 impl<G> TileRule<G> for Violation
 where
-    G: Grid,
+    G: GridIter,
 {
     fn solve_at(&mut self, pos: Pos, grid: &mut G) -> Option<Response> {
         let value = grid.get(pos)?.as_value()?;

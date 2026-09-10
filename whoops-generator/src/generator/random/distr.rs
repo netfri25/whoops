@@ -1,6 +1,6 @@
 use rand::distr::Bernoulli;
 use rand::prelude::*;
-use whoops_core::grid::{Grid, GridExt, TileGrid};
+use whoops_core::grid::{Grid, GridIter, TileGrid};
 use whoops_core::offset::Offset;
 use whoops_core::tile::Tile;
 use whoops_solver::{Solver, UpdateAllValues, UpdateValue};

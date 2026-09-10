@@ -2,6 +2,7 @@ use std::fmt;
 
 use super::Grid;
 
+use crate::grid::GridIter;
 use crate::pos::Pos;
 use crate::tile::Tile;
 
@@ -48,7 +49,7 @@ impl fmt::Debug for TileGrid {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         writeln!(f, "TileGrid(")?;
 
-        for chunk in self.tiles.chunks(self.width as usize) {
+        for chunk in self.tiles.chunks(self.width) {
             writeln!(f, "{:?}", chunk)?;
         }
 
@@ -82,10 +83,16 @@ impl Grid for TileGrid {
     }
 }
 
+impl GridIter for TileGrid {
+    fn iter_tile(&self) -> impl Iterator<Item = Tile> {
+        self.tiles.iter().copied()
+    }
+}
+
 impl<const W: usize, const H: usize> From<[[Tile; W]; H]> for TileGrid {
     fn from(value: [[Tile; W]; H]) -> Self {
         let tiles = value.as_flattened().into();
-        let width = W as usize;
+        let width = W;
         Self { tiles, width }
     }
 }

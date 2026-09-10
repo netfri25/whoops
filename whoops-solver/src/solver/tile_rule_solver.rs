@@ -1,6 +1,6 @@
 use std::collections::VecDeque;
 
-use whoops_core::grid::{Grid, GridExt};
+use whoops_core::grid::GridIter;
 use whoops_core::pos::Pos;
 
 use crate::Solver;
@@ -14,7 +14,7 @@ pub struct TileRuleSolver<R> {
 impl<R, G> Solver<G> for TileRuleSolver<R>
 where
     R: TileRule<G>,
-    G: Grid,
+    G: GridIter,
 {
     fn solve(&mut self, mut grid: G) -> Result<G, G> {
         // positions to target (number tiles)

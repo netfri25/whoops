@@ -1,4 +1,4 @@
-use whoops_core::grid::Grid;
+use whoops_core::grid::GridIter;
 use whoops_core::pos::Pos;
 
 pub mod func_tile_rule;
@@ -18,7 +18,7 @@ pub trait TileRule<G: ?Sized> {
 
 pub fn default_tile_rule<G>() -> impl TileRule<G>
 where
-    G: Grid,
+    G: GridIter,
 {
     rules::Minimum
         .chain(rules::Violation)

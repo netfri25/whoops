@@ -1,5 +1,5 @@
 use rand::prelude::*;
-use whoops_core::grid::{Grid, GridExt, TileGrid};
+use whoops_core::grid::{GridExt, GridIter, TileGrid};
 use whoops_core::tile::Tile;
 use whoops_solver::{Solver, default_solver_checked};
 
@@ -26,7 +26,7 @@ impl<R> RandomGenerator<R> {
     fn find_minimal_knowns<G>(&mut self, solution: &G, max_known: usize) -> (usize, G)
     where
         R: Rng,
-        G: Grid + Clone,
+        G: GridIter + Clone,
     {
         // assumes that the solution grid contains only known tiles, which means that every position
         // contains a known tile
@@ -71,7 +71,7 @@ impl<R> RandomGenerator<R> {
 impl<R, G> Generator<G> for RandomGenerator<R>
 where
     R: Rng,
-    G: From<TileGrid> + Grid + Clone,
+    G: From<TileGrid> + GridIter + Clone,
 {
     fn generate(mut self) -> GeneratorOutput<G> {
         (&mut self).generate()
@@ -81,7 +81,7 @@ where
 impl<R, G> Generator<G> for &mut RandomGenerator<R>
 where
     R: Rng,
-    G: From<TileGrid> + Grid + Clone,
+    G: From<TileGrid> + GridIter + Clone,
 {
     fn generate(self) -> GeneratorOutput<G> {
         let distr = GridDistrbution {

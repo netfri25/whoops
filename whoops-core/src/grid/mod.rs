@@ -2,7 +2,9 @@ use crate::pos::Pos;
 use crate::tile::Tile;
 
 mod ext;
+mod iter;
 pub use ext::*;
+pub use iter::*;
 
 pub mod allow_unknown;
 pub mod history;
@@ -28,10 +30,6 @@ pub trait Grid {
 
     /// returns the height of the grid
     fn height(&self) -> u32;
-
-    fn is_full(&self) -> bool {
-        !self.iter_tile().any(|tile| tile.is_unknown())
-    }
 }
 
 impl<G> Grid for Box<G>

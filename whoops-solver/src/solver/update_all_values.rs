@@ -1,4 +1,4 @@
-use whoops_core::grid::{Grid, GridExt};
+use whoops_core::grid::GridIter;
 
 use crate::{Solver, UpdateValue};
 
@@ -7,7 +7,7 @@ pub struct UpdateAllValues;
 
 impl<G> Solver<G> for UpdateAllValues
 where
-    G: Grid,
+    G: GridIter,
 {
     #[inline(always)]
     fn solve(&mut self, mut grid: G) -> Result<G, G> {
