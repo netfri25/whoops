@@ -71,7 +71,7 @@ impl<R> RandomGenerator<R> {
 impl<R, G> Generator<G> for RandomGenerator<R>
 where
     R: Rng,
-    G: From<TileGrid>,
+    G: From<TileGrid> + Grid + Clone,
 {
     fn generate(mut self) -> GeneratorOutput<G> {
         (&mut self).generate()
@@ -81,7 +81,7 @@ where
 impl<R, G> Generator<G> for &mut RandomGenerator<R>
 where
     R: Rng,
-    G: From<TileGrid>,
+    G: From<TileGrid> + Grid + Clone,
 {
     fn generate(self) -> GeneratorOutput<G> {
         let distr = GridDistrbution {
@@ -96,12 +96,12 @@ where
         let mut minimal_output = None;
         let mut minimal_knowns_count = usize::MAX;
         for _ in 0..self.params.iterations {
-            let solution = self.rng.sample::<TileGrid, _>(distr);
+            let solution = self.rng.sample::<TileGrid, _>(distr).into();
             let (knowns_count, grid) = self.find_minimal_knowns(&solution, max_known);
             let output = GeneratorOutput { grid, solution };
 
             if knowns_count <= max_known {
-                return output.into();
+                return output;
             }
 
             if knowns_count < minimal_knowns_count {
@@ -110,8 +110,6 @@ where
             }
         }
 
-        minimal_output
-            .expect("more than one iteration ensures that there's an output")
-            .into()
+        minimal_output.expect("more than one iteration ensures that there's an output")
     }
 }

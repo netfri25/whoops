@@ -9,6 +9,7 @@ impl<G> Solver<G> for UpdateAllValues
 where
     G: Grid,
 {
+    #[inline(always)]
     fn solve(&mut self, mut grid: G) -> Result<G, G> {
         for pos in grid.iter_pos() {
             grid = UpdateValue(pos).solve(grid).unwrap_or_else(|grid| grid);

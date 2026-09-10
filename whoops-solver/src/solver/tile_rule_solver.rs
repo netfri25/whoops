@@ -20,7 +20,7 @@ where
         // positions to target (number tiles)
         let targets = grid
             .iter()
-            .filter_map(|(pos, tile)| tile.as_value().map(|_| pos));
+            .filter_map(|(pos, tile)| tile.is_value().then_some(pos));
 
         self.targets.clear();
         self.targets.extend(targets);

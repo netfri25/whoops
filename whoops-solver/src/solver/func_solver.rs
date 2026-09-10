@@ -7,6 +7,7 @@ impl<F, G> Solver<G> for FuncSolver<F>
 where
     F: FnMut(G) -> Result<G, G>,
 {
+    #[inline(always)]
     fn solve(&mut self, grid: G) -> Result<G, G> {
         (self.0)(grid)
     }

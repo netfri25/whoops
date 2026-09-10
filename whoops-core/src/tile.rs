@@ -27,18 +27,22 @@ impl fmt::Debug for Tile {
 }
 
 impl Tile {
+    #[inline(always)]
     pub fn is_unknown(&self) -> bool {
         matches!(self, Self::Unknown)
     }
 
+    #[inline(always)]
     pub fn is_wall(&self) -> bool {
         matches!(self, Self::Wall)
     }
 
+    #[inline(always)]
     pub fn is_dot(&self) -> bool {
         matches!(self, Self::Dot(_))
     }
 
+    #[inline(always)]
     pub fn as_value(&self) -> Option<u8> {
         if let &Self::Dot(value) = self {
             (value != 0).then_some(value)
@@ -47,15 +51,14 @@ impl Tile {
         }
     }
 
+    #[inline(always)]
     pub fn is_value(&self) -> bool {
         self.as_value().is_some()
     }
 
+    #[inline(always)]
     pub fn matches(&self, other: Self) -> bool {
-        match (*self, other) {
-            (Self::Dot(l), Self::Dot(r)) if l == 0 || r == 0 => true,
-            (l, r) => l == r,
-        }
+        *self == other || matches!(self, Self::Dot(0)) && other.is_value()
     }
 }
 

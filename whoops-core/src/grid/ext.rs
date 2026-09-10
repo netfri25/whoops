@@ -33,6 +33,7 @@ where
         GridIter::new(self)
     }
 
+    #[inline(always)]
     fn iter_pos_offset(&self, start: Pos, offset: Offset) -> impl Iterator<Item = Pos> + 'static {
         let w = self.width();
         let h = self.height();
@@ -40,14 +41,16 @@ where
             .take_while(move |pos| pos.x < w && pos.y < h)
     }
 
+    #[inline(always)]
     fn iter_tile_offset(&self, start: Pos, offset: Offset) -> impl Iterator<Item = Tile> {
         self.iter_pos_offset(start, offset)
-            .flat_map(|pos| self.get(pos))
+            .filter_map(|pos| self.get(pos))
     }
 
+    #[inline(always)]
     fn iter_offset(&self, start: Pos, offset: Offset) -> impl Iterator<Item = (Pos, Tile)> {
         self.iter_pos_offset(start, offset)
-            .flat_map(|pos| self.get(pos).map(|tile| (pos, tile)))
+            .flat_map(|pos| Some(pos).zip(self.get(pos)))
     }
 
     fn matches(&self, pattern: &impl Grid) -> bool {

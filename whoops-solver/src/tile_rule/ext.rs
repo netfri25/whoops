@@ -10,6 +10,7 @@ impl<R, G> TileRuleExt<G> for R
 where
     R: TileRule<G>,
 {
+    #[inline(always)]
     fn chain<B>(mut self, mut other: B) -> impl TileRule<G>
     where
         B: TileRule<G>,

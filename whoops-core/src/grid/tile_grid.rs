@@ -9,21 +9,21 @@ use crate::tile::Tile;
 /// simple grid implementation that keeps tiles as a 1-dim array of Tile
 #[derive(Clone, PartialEq, Eq)]
 pub struct TileGrid {
+    width: usize,
     tiles: Box<[Tile]>,
-    width: u32,
 }
 
 impl TileGrid {
-    pub fn from_parts(tiles: impl IntoIterator<Item = Tile>, width: u32) -> Option<Self> {
-        let tiles: Box<[Tile]> = tiles.into_iter().collect();
-
+    pub fn from_parts(tiles: Box<[Tile]>, width: u32) -> Option<Self> {
         if !tiles.len().is_multiple_of(width as usize) {
             return None;
         }
 
+        let width = width as usize;
         Some(Self { tiles, width })
     }
 
+    #[inline(always)]
     fn index_of(&self, pos: Pos) -> Option<usize> {
         if pos.x >= self.width() || pos.y >= self.height() {
             return None;
@@ -33,10 +33,12 @@ impl TileGrid {
         Some(index as usize)
     }
 
+    #[inline(always)]
     fn at(&self, index: usize) -> Option<Tile> {
         self.tiles.get(index).copied()
     }
 
+    #[inline(always)]
     fn at_mut(&mut self, index: usize) -> Option<&mut Tile> {
         self.tiles.get_mut(index)
     }
@@ -55,11 +57,13 @@ impl fmt::Debug for TileGrid {
 }
 
 impl Grid for TileGrid {
+    #[inline(always)]
     fn get(&self, pos: Pos) -> Option<Tile> {
         let index = self.index_of(pos)?;
         self.at(index)
     }
 
+    #[inline(always)]
     fn set(&mut self, pos: Pos, tile: Tile) -> Option<Tile> {
         let index = self.index_of(pos)?;
         let target = self.at_mut(index)?;
@@ -67,10 +71,12 @@ impl Grid for TileGrid {
         Some(old)
     }
 
+    #[inline(always)]
     fn width(&self) -> u32 {
-        self.width
+        self.width as u32
     }
 
+    #[inline(always)]
     fn height(&self) -> u32 {
         self.tiles.len() as u32 / self.width()
     }
@@ -79,7 +85,7 @@ impl Grid for TileGrid {
 impl<const W: usize, const H: usize> From<[[Tile; W]; H]> for TileGrid {
     fn from(value: [[Tile; W]; H]) -> Self {
         let tiles = value.as_flattened().into();
-        let width = W as u32;
+        let width = W as usize;
         Self { tiles, width }
     }
 }

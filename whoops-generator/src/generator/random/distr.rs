@@ -14,6 +14,7 @@ pub struct GridDistrbution {
 }
 
 impl Distribution<TileGrid> for GridDistrbution {
+    #[inline(always)]
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> TileGrid {
         // start with a grid that has randomally generated walls
         let wall_prob = self.wall.clamp(0., 1.);
@@ -24,7 +25,7 @@ impl Distribution<TileGrid> for GridDistrbution {
             .take((self.width * self.height) as usize)
             .collect();
 
-        let mut grid = TileGrid::from_parts(tiles, self.width).expect("width divides tiles.len()");
+        let grid = TileGrid::from_parts(tiles, self.width).expect("width divides tiles.len()");
 
         // since we allow non-square grids, it makes the most sense to calculate
         // the "size" as a geometric mean.
@@ -32,7 +33,7 @@ impl Distribution<TileGrid> for GridDistrbution {
         let size = (self.width * self.height).isqrt();
 
         // add counts for every dot on the grid
-        UpdateAllValues.solve(&mut grid).ok();
+        let mut grid = UpdateAllValues.solve(grid).unwrap_or_else(|grid| grid);
 
         loop {
             // find the positions of all of the values that are bigger than `size`
