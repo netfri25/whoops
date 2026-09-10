@@ -38,7 +38,17 @@ where
                         })
                         .sum();
 
-                    value >= total_visible
+                    let total_possible: u8 = Offset::DIRECTIONS
+                        .into_iter()
+                        .map(|direction| {
+                            grid.iter_tile_offset(pos, direction)
+                                .skip(1)
+                                .take_while(|tile| !tile.is_wall())
+                                .count() as u8
+                        })
+                        .sum();
+
+                    value >= total_visible && value <= total_possible
                 }
             }
         });
