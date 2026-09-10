@@ -96,6 +96,7 @@ where
             } else {
                 self.grid.undo();
             }
+            self.fill_with_values_if_finished();
         }
 
         if is_key_pressed(KeyCode::S) {
@@ -149,8 +150,6 @@ where
 
         let history = solved_grid.take_history();
         self.grid.lazy_extend(history.into_iter().map(Into::into));
-        self.grid.lazy_flush();
-        self.fill_with_values_if_finished();
     }
 }
 
