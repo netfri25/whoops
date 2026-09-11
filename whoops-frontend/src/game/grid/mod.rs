@@ -14,7 +14,7 @@ mod animation;
 use animation::GridAnimation;
 
 static FONT: LazyLock<Font> = LazyLock::new(|| {
-    load_ttf_font_from_bytes(include_bytes!("../../../../assets/JosefinSans-Bold.ttf")).unwrap()
+    load_ttf_font_from_bytes(include_bytes!("../../../assets/JosefinSans-Bold.ttf")).unwrap()
 });
 
 const FONT_SCALING: u16 = 250;
