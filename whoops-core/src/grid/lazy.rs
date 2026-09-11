@@ -6,11 +6,10 @@ use crate::pos::Pos;
 use crate::tile::Tile;
 
 /// allows to delay modifications to the grid, and apply them later using the `.step()` method.
-/// toggleable for ease of use.
-/// when using From<G>, it's non lazy by default
+/// delay happens only when calling the `lazy_set` method. the rest of the grid methods are simply
+/// delegated to the inner grid
 pub struct Lazy<G> {
     grid: G,
-    is_lazy: bool,
     steps: VecDeque<Step>,
 }
 
@@ -18,32 +17,20 @@ impl<G> Lazy<G>
 where
     G: Grid,
 {
-    pub fn new(grid: G, is_lazy: bool, steps: VecDeque<Step>) -> Self {
-        Self {
-            grid,
-            steps,
-            is_lazy,
-        }
+    pub fn new(grid: G) -> Self {
+        Self::from_steps(grid, [].into())
+    }
+
+    pub fn from_steps(grid: G, steps: VecDeque<Step>) -> Self {
+        Self { grid, steps }
     }
 
     pub fn into_grid(self) -> G {
         self.grid
     }
 
-    pub fn set_is_lazy(&mut self, is_lazy: bool) {
-        self.is_lazy = is_lazy;
-    }
-
-    pub fn is_lazy(&self) -> bool {
-        self.is_lazy
-    }
-
-    pub fn is_lazy_empty(&self) -> bool {
+    pub fn lazy_is_empty(&self) -> bool {
         self.steps.is_empty()
-    }
-
-    pub fn toggle_is_lazy(&mut self) {
-        self.set_is_lazy(!self.is_lazy)
     }
 
     pub fn lazy_step(&mut self) {
@@ -58,7 +45,7 @@ where
         }
     }
 
-    pub fn lazy_clear_steps(&mut self) {
+    pub fn lazy_clear(&mut self) {
         self.steps.clear();
     }
 
@@ -87,15 +74,7 @@ where
     }
 
     fn set(&mut self, pos: Pos, tile: Tile) -> Option<Tile> {
-        if self.is_lazy() {
-            // I do the get before the set because I shortcircuit it, and I don't want to add a lazy
-            // step for a position that doesn't have anything valid.
-            let old_tile = self.get(pos)?;
-            self.lazy_set(pos, tile);
-            Some(old_tile)
-        } else {
-            self.grid.set(pos, tile)
-        }
+        self.grid.set(pos, tile)
     }
 
     fn width(&self) -> u32 {
@@ -112,7 +91,7 @@ where
     G: Grid,
 {
     fn from(value: G) -> Self {
-        Self::new(value, false, [].into())
+        Self::new(value)
     }
 }
 
@@ -152,6 +131,6 @@ where
         let history = value.take_history();
         let steps = history.into_iter().map(Into::into).collect();
         let grid = value.into_grid();
-        Self::new(grid, false, steps)
+        Self::from_steps(grid, steps)
     }
 }

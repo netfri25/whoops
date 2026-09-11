@@ -104,10 +104,6 @@ where
             self.fill_with_values_if_finished();
         }
 
-        if is_key_pressed(KeyCode::T) {
-            self.grid.toggle_is_lazy();
-        }
-
         if is_key_pressed(KeyCode::C) {
             self.complete_grid();
             self.fill_with_values_if_finished();
@@ -137,7 +133,7 @@ where
     }
 
     fn lazy_step(&mut self) {
-        if self.grid.is_lazy_empty() {
+        if self.grid.lazy_is_empty() {
             self.solve();
         }
 
@@ -200,7 +196,7 @@ fn generate(rng: impl Rng, width: u32, height: u32) -> GeneratorOutput<TileGrid>
 fn construct_an_abomination_of_a_grid(grid: TileGrid) -> OhnO {
     let grid = GameGrid::new(grid);
     let grid = History::new(grid);
-    let grid = Lazy::new(grid, false, [].into());
+    let grid = Lazy::new(grid);
     let grid = AllowUnknown::new(grid);
     grid
 }
