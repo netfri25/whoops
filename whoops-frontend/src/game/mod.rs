@@ -9,7 +9,7 @@ use whoops_core::tile::Tile;
 use whoops_generator::random::{self, RandomGenerator};
 use whoops_generator::{Generator, GeneratorOutput};
 use whoops_solver::{
-    AssertFull, AssertValid, Solver, SolverExt, UpdateAllValues, default_solver_checked,
+    AssertFull, AssertValid, Solver, SolverExt, UpdateAllValues, default_solver, default_solver_checked,
 };
 
 use crate::grid_layout::GridLayout;
@@ -182,7 +182,8 @@ fn prev_tile(tile: Tile) -> Tile {
 
 fn generate(rng: impl Rng, width: u32, height: u32) -> GeneratorOutput<TileGrid> {
     let params = random::Params::new(width, height);
-    let generator = RandomGenerator::new(rng, params);
+    let solver = default_solver();
+    let generator = RandomGenerator::new(rng, solver, params);
 
     let start = std::time::Instant::now();
     let output = generator.generate();

@@ -1,7 +1,7 @@
 use rand::prelude::*;
 use whoops_core::grid::{GridExt, GridIter, TileGrid};
 use whoops_core::tile::Tile;
-use whoops_solver::{Solver, default_solver};
+use whoops_solver::Solver;
 
 use crate::generator::{Generator, GeneratorOutput};
 
@@ -11,14 +11,15 @@ mod params;
 pub use distr::GridDistrbution;
 pub use params::Params;
 
-pub struct RandomGenerator<R> {
+pub struct RandomGenerator<R, S> {
     rng: R,
+    solver: S,
     params: Params,
 }
 
-impl<R> RandomGenerator<R> {
-    pub fn new(rng: R, params: Params) -> Self {
-        Self { rng, params }
+impl<R, S> RandomGenerator<R, S> {
+    pub fn new(rng: R, solver: S, params: Params) -> Self {
+        Self { rng, solver, params }
     }
 
     // returns (knowns_count, Grid) where the Grid is the actual output, and the `knowns_count` is
@@ -26,6 +27,7 @@ impl<R> RandomGenerator<R> {
     fn find_minimal_knowns<G>(&mut self, solution: &G, max_known: usize) -> (usize, G)
     where
         R: Rng,
+        S: Solver<G>,
         G: GridIter + Clone,
     {
         // assumes that the solution grid contains only known tiles, which means that every position
@@ -51,7 +53,7 @@ impl<R> RandomGenerator<R> {
                 continue;
             };
 
-            let solvable = default_solver()
+            let solvable = self.solver
                 .solve(grid.clone())
                 .is_ok_and(|solved| solved.matches(solution));
 
@@ -68,9 +70,10 @@ impl<R> RandomGenerator<R> {
     }
 }
 
-impl<R, G> Generator<G> for RandomGenerator<R>
+impl<R, S, G> Generator<G> for RandomGenerator<R, S>
 where
     R: Rng,
+    S: Solver<G>,
     G: From<TileGrid> + GridIter + Clone,
 {
     fn generate(mut self) -> GeneratorOutput<G> {
@@ -78,9 +81,10 @@ where
     }
 }
 
-impl<R, G> Generator<G> for &mut RandomGenerator<R>
+impl<R, S, G> Generator<G> for &mut RandomGenerator<R, S>
 where
     R: Rng,
+    S: Solver<G>,
     G: From<TileGrid> + GridIter + Clone,
 {
     fn generate(self) -> GeneratorOutput<G> {
