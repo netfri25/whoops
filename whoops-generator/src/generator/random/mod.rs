@@ -19,7 +19,11 @@ pub struct RandomGenerator<R, S> {
 
 impl<R, S> RandomGenerator<R, S> {
     pub fn new(rng: R, solver: S, params: Params) -> Self {
-        Self { rng, solver, params }
+        Self {
+            rng,
+            solver,
+            params,
+        }
     }
 
     // returns (knowns_count, Grid) where the Grid is the actual output, and the `knowns_count` is
@@ -53,7 +57,8 @@ impl<R, S> RandomGenerator<R, S> {
                 continue;
             };
 
-            let solvable = self.solver
+            let solvable = self
+                .solver
                 .solve(grid.clone())
                 .is_ok_and(|solved| solved.matches(solution));
 

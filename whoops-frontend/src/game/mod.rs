@@ -9,7 +9,8 @@ use whoops_core::tile::Tile;
 use whoops_generator::random::{self, RandomGenerator};
 use whoops_generator::{Generator, GeneratorOutput};
 use whoops_solver::{
-    AssertFull, AssertValid, Solver, SolverExt, UpdateAllValues, default_solver, default_solver_checked,
+    AssertFull, AssertValid, Solver, SolverExt, UpdateAllValues, default_solver,
+    default_solver_checked,
 };
 
 use crate::grid_layout::GridLayout;
